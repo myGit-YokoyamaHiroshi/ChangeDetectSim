@@ -15,8 +15,8 @@ get_ipython().magic('reset -sf')
 #get_ipython().magic('cls')
 
 import os
-os.chdir('D:\\Python_Scripts\\test_myBayesianModel_PRC')
-# os.chdir('C:\\Users\\H.yokoyama\\Documents\\Python_Scripts\\test_bayesian_dynamical_oscillator')
+os.chdir('D:\\GitHub\\ChangeDetectSim\\')
+
 current_path = os.getcwd()
 fig_save_dir = current_path + '\\figures\\sim1\\'
 
@@ -63,86 +63,29 @@ for file in os.listdir(param_path):
     ext.append(split_str[1])
     
     print(split_str)
-#%%
-if len(glob.glob(param_path + '*.npy')) == 0:
-    # setting
-    time  = 48 # measurement time
-    h     = 0.01    # micro time
-    Nt    = int(time/h)
-    Nosc  = 3   
-    State = 3
-    
-    for st in range(State):
-        if st == 0:
-            K1_tr = random_adjacency_matrix(Nosc)[:,:,np.newaxis]
-            K2_tr = random_adjacency_matrix(Nosc)[:,:,np.newaxis]
-        else:
-            K1_tr = np.concatenate((K1_tr, random_adjacency_matrix(Nosc)[:,:,np.newaxis]), axis=2)
-            K2_tr = np.concatenate((K2_tr, random_adjacency_matrix(Nosc)[:,:,np.newaxis]), axis=2)
-        
-        if st == 0:
-            K1_tr[:,:,st] = K1_tr[:,:,st] * np.tri(Nosc, Nosc).T
-            K2_tr[:,:,st] = K2_tr[:,:,st] * np.tri(Nosc, Nosc).T
-            
-            K1_tr[0,1,st] = 0
-            K2_tr[0,1,st] = 0
-        elif st == 1:
-            K1_tr[:,:,st] = K1_tr[:,:,st] * np.tri(Nosc, Nosc)
-            K2_tr[:,:,st] = K2_tr[:,:,st] * np.tri(Nosc, Nosc).T
-        elif st == 2:
-            K1_tr[:,:,st] = K1_tr[:,:,st-1]
-            K2_tr[:,:,st] = K2_tr[:,:,st-1]
-     
-    K_tr       = np.sqrt(K1_tr**2 + K2_tr**2)
-    omega      = 2 * np.pi * np.array([3.95, 4.2, 4.62])#.uniform(2, 3, Nosc)
-    theta_init = np.random.permutation(np.linspace(0,  np.pi, Nosc))
-    #%%
-    param_dict                   = {}
-    param_dict['Nosc']           = Nosc
-    param_dict['time']           = time
-    param_dict['h']              = h
-    param_dict['Nt']             = Nt
-    param_dict['State']          = State
-    param_dict['omega']          = omega
-    param_dict['K_tr']           = K_tr
-    param_dict['K1_tr']          = K1_tr
-    param_dict['K2_tr']          = K2_tr
-    
-    param_dict['theta_init']     = theta_init
-    # param_dict['dtheta']         = dtheta
-    # param_dict['phase_dynamics'] = phase_dynamics
-    
-    save_name       = 'Sim_param_weak'
-    fullpath_save   = param_path + save_name 
-    np.save(fullpath_save, param_dict)
-elif len(glob.glob(param_path + '*.npy')) != 0:
-    
-    fullpath      = param_path + name[0] + ext[0]
-    param_dict    = np.load(fullpath, encoding='ASCII', allow_pickle='True').item()
-    Nosc          = param_dict['Nosc']
-    time          = param_dict['time']
-    h             = param_dict['h']
-    Nt            = param_dict['Nt']
-    State         = param_dict['State']
-    omega         = param_dict['omega']
-    K1_tr         = param_dict['K1_tr']
-    K2_tr         = param_dict['K2_tr']
-    K_tr          = param_dict['K_tr']
-    
-    theta_init    = param_dict['theta_init']
-    # dtheta         = param_dict['dtheta']
-    # phase_dynamics = param_dict['phase_dynamics']
-    del param_dict
-#%%
+#%%    
+fullpath      = param_path + name[0] + ext[0]
+param_dict    = np.load(fullpath, encoding='ASCII', allow_pickle='True').item()
+Nosc          = param_dict['Nosc']
+time          = param_dict['time']
+h             = param_dict['h']
+Nt            = param_dict['Nt']
+State         = param_dict['State']
+omega         = param_dict['omega']
+K1_tr         = param_dict['K1_tr']
+K2_tr         = param_dict['K2_tr']
+K_tr          = param_dict['K_tr']
 
+theta_init    = param_dict['theta_init']
+del param_dict
+#%%
 dtheta        = np.zeros((Nt, Nosc))
 theta         = np.zeros((Nt, Nosc))
-theta[0, :]   = theta_init#np.array([np.pi, np.pi*1/3,  0])
-noise_scale   = 0.01
+theta[0, :]   = theta_init
+noise_scale   = 0.1
 
 phase_dynamics       = np.zeros((Nt, Nosc))
 phase_dynamics[0, :] = func_oscillator_approx_fourier_series(theta[0, :], K1_tr[:,:,0], K2_tr[:,:,0], omega, noise_scale)
-
 for t in range(1, Nt):
     if t < int(Nt/3):
         Nst = 0
@@ -207,14 +150,12 @@ plt.show()
 P = 1
 T = 1
 x = deepcopy(theta)
-confounder = True
 
 noise_param = 1E-3 # covariance of process noise
-# noise_param = 1E-6 # covariance of process noise
 prec_param  = 1/noise_param # precision parameter, cov(process noise) = 1/prec_param
 #%%
 cnt = 1
-beta, OMEGA, Changes, L, y_hat, sigma0, Kb0 = est_dynamical_oscillator_1st_order_fourier(x, P, T, h, confounder, prec_param)
+beta, OMEGA, Changes, L, y_hat, sigma0, Kb0 = est_dynamical_oscillator_1st_order_fourier(x, P, T, h, prec_param)
 # beta, OMEGA, Changes, L, y_hat, sigma0, Kb0 = est_dynamical_oscillator_2nd_order_fourier(x, P, T, h, confounder, prec_param)
 
 if len(OMEGA.shape)==3:

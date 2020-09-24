@@ -11,8 +11,6 @@ from numpy.random import randn, rand
 import numpy as np
 
 #%%
-def exponential_cov(x, y, params=[1, 1]):
-    return params[0] * np.exp( -0.5 * params[1] * np.subtract.outer(x, y)**2)
 ##############################################################################
 def KL_div(mu1, mu2, K1, K2):
     D      = K1.shape[0]
@@ -50,60 +48,6 @@ def mean_of_two_gauss(mu1, mu2, K1, K2):
     K  = 0.5**2 * (K1  + K2)
     
     return mu, K
-
-def entropy_of_gauss(mu, K):
-    D                = K.shape[0]
-    K_inv            = inv_use_cholensky(K)
-    sgn, logdetK_inv = np.linalg.slogdet(K_inv)
-    
-    Entropy      = 0.5 * (-logdetK_inv + D * (1 + np.log(2*np.pi))) # == 0.5 * (logdetK + D * (1 + np.log(2*np.pi)))
-    
-    return Entropy
-
-def likelihood_anomaly(y_hat, y, sigma0): # not use
-    p     = sigma0.shape[0]
-    n     = y_hat.shape[0]
-    
-    Sigm0 = np.diag(sigma0)
-    
-    if np.trace(Sigm0)==0:
-        Lamb0 = np.diag(np.zeros(sigma0.shape))
-    else:
-        Lamb0 = inv_use_cholensky(Sigm0)
-    
-    err   = y_hat - y
-    score = ((err  @ Lamb0)**2)/(2*np.diag(Lamb0)) - 0.5 * p * n *np.log(np.diag(Lamb0)/(2*np.pi))
-    
-    # score = score/score.max()
-    
-    return score.mean()
-
-def Mahalanobis_anomaly(y_new, y_pre, sigma_pre):
-    Sigm     = np.diag(sigma_pre)
-    
-    if np.trace(Sigm)==0:
-        Lamb     = np.diag(np.zeros(sigma_pre.shape))
-    else:
-        Lamb     = inv_use_cholensky(Sigm)
-    
-    lamb = np.diag(Lamb)
-    err  = (y_new - y_pre)
-    
-    
-    a = ((err  @ Lamb)**2)/(2*lamb) # = err**2/sigma
-    a = a.mean()
-    # a = ((a-a.min())/(np.max(a)-np.min(a))).mean()
-    
-    return a
-
-def BIC(y_hat, y, T, k):
-    err  = (y_hat - y)
-    
-    a = 2*np.log((err**2).mean()) + k * np.log(T)
-    a = a.mean()
-    # a = (a/np.max(a)).mean()
-    
-    return a
 
 def my_det(Mtrx):
     sgn, logdet = np.linalg.slogdet(Mtrx)
@@ -182,24 +126,8 @@ def inv_use_cholensky(M):
     
     return M_inv
 
-def make_lagged_X(x, T, N, P, confounder):
-    tmpX  = deepcopy(np.flipud(x))
-    
-    for i in range(0, P):
-        idx   = np.arange(i, i+T, 1)
-        if i == 0:
-            X = deepcopy(tmpX[idx, :])
-        else:
-            X = np.concatenate((X,tmpX[idx, :]), axis=1)
-        
-    del tmpX
-    
-    if confounder == True:
-        X = np.concatenate((X, np.ones((T, 1))), axis=1)
-    
-    return X
 
-def make_Dx(X, T, N, P, confounder):
+def make_Dx(X, T, N, P):
     Dx   = np.zeros((N*T,  N*(N*P+1)*T), dtype=float)
     
     cnt = 0;
@@ -213,7 +141,7 @@ def make_Dx(X, T, N, P, confounder):
     for i in order_index:#range(1, (X.shape[0])*(X.shape[1]-1) ):
         tmp_x = deepcopy(X[i, :]).reshape(-1)
         
-        idx = np.arange(cnt*(N*P+confounder), (cnt+1)*(N*P+confounder), 1)
+        idx = np.arange(cnt*(N*P+1), (cnt+1)*(N*P+1), 1)
             
         Dx[cnt, idx] = tmp_x
         cnt += 1
@@ -226,8 +154,6 @@ def update_coeff(X, Y, Dx, mu_beta, Kb, sigma0, T, N):
     Kb0      = deepcopy(Kb)
     # Kb0_inv  = inv_use_cholensky(Kb0)
     
-    #### Select coefficient with prior distribution 
-    # B = np.random.multivariate_normal(mu_beta0, Kb0)
     ############# Estimate posterior distribution #############################
     tmp     = sigma0 * np.eye(N*T) + Dx @ Kb0 @ Dx.T # (1/sigma0) * np.eye(N*T) + Dx @ Kb0 @ Dx.T # 
     tmp_inv = inv_use_cholensky(tmp)
@@ -242,22 +168,16 @@ def update_coeff(X, Y, Dx, mu_beta, Kb, sigma0, T, N):
     mu_beta = mu_beta0 + KbDx @ tmp_inv @ Yv 
     ############# Calculate log-likelihood ####################################
     # Computes the log of the marginal likelihood without constant term.
-    Kb_inv  = inv_use_cholensky(deepcopy(Kb))
-    # B_hat   = np.random.multivariate_normal(mu_beta, Kb)
-    
-    
+    # Kb_inv  = inv_use_cholensky(deepcopy(Kb))
+
     E_err   = Yv  @ Yv
-    E_beta  = (mu_beta0 - mu_beta).T @ (mu_beta0 - mu_beta)#(B_hat - mu_beta) @ Kb_inv @ (B_hat - mu_beta)
+    E_beta  = (mu_beta0 - mu_beta).T @ (mu_beta0 - mu_beta)
     
     loglike = ( - E_err - E_beta )/2
     
     ############# changing ratio ##############################################
     ########## KL divergence
-    change_ratio = KL_div(mu_beta0, mu_beta, Kb0, Kb) # KL_div(mu_beta, mu_beta0, Kb, Kb0) # 
-    
-    # ########## JS divergence
-    # change_ratio = JS_div(mu_beta0, mu_beta, Kb0, Kb) 
-    
+    change_ratio = KL_div(mu_beta0, mu_beta, Kb0, Kb) 
     ###########################################################################
     return mu_beta, Kb, loglike, change_ratio
 
@@ -348,7 +268,7 @@ def est_dynamical_kuramoto(x, P, T, h, confounder, prec_param):
     return beta, OMEGA, Changes, L
 
 ##############################################################################
-def est_dynamical_oscillator_1st_order_fourier(x, P, T, h, confounder, prec_param):   
+def est_dynamical_oscillator_1st_order_fourier(x, P, T, h, prec_param):   
     Nt, Nosc = x.shape
     
     Kb0      = np.eye(Nosc*(Nosc*2*P+1)*T)
@@ -381,8 +301,7 @@ def est_dynamical_oscillator_1st_order_fourier(x, P, T, h, confounder, prec_para
             tmp_cos = tmp_cos - np.eye(Nosc)
             
             x_train = np.concatenate((tmp_cos, tmp_sin), axis=1)
-            if confounder == True:
-                x_train = np.concatenate((x_train, np.ones((Nosc, 1))), axis=1)
+            x_train = np.concatenate((x_train, np.ones((Nosc, 1))), axis=1)
         else:
             for t in range(0, T):
                 tmp_cos = np.cos(x[(i-T)+t, :].reshape(1, Nosc) - x[(i-T)+t, :].reshape(Nosc, 1))
@@ -395,8 +314,8 @@ def est_dynamical_oscillator_1st_order_fourier(x, P, T, h, confounder, prec_para
                     x_train = tmp
                 else:
                     x_train = np.concatenate((x_train, tmp), axis=0)                
-            if confounder == True:
-                x_train = np.concatenate((x_train, np.ones((Nosc*T, 1))), axis=1)
+
+            x_train = np.concatenate((x_train, np.ones((Nosc*T, 1))), axis=1)
         #########################################################################
         if T ==1:
             y_train = np.zeros((1, Nosc))
@@ -413,7 +332,7 @@ def est_dynamical_oscillator_1st_order_fourier(x, P, T, h, confounder, prec_para
                     # tmp_idx = np.arange(i+t, i+t+2, 1)
                     # print('start:%d / end:%d'%(tmp_idx[0], tmp_idx[-1]))
         y_train = y_train.reshape(-1, order='C')
-        Dx      = make_Dx(x_train, T, Nosc, 2*P, confounder)
+        Dx      = make_Dx(x_train, T, Nosc, 2*P)
         #########################################################################
         #### Prediction step : Update Model covarianvce (Observation noise)  
         noise   = 1/prec_param
@@ -431,7 +350,6 @@ def est_dynamical_oscillator_1st_order_fourier(x, P, T, h, confounder, prec_para
         sigma0     = deepcopy(sigma)
         L[i-T]       = deepcopy(loglike)
         Changes[i-T] = deepcopy(change_ratio)
-        Entropy[i-T] = entropy_of_gauss(mu_beta, Kb)
         
         # print(Entropy[i-T])
         
@@ -449,146 +367,11 @@ def est_dynamical_oscillator_1st_order_fourier(x, P, T, h, confounder, prec_para
         OMEGA[i-T:i, :, 0] = tmp_beta[:,-1].reshape((T, Nosc))
         cnt += 1
     
-    #%% ## Apply normalized divergence as the changing ratio
-    # max_C     = (Changes[np.isnan(Changes)==False] ).max() # 
-    # min_C     = (Changes[np.isnan(Changes)==False] ).min() # 
-    # norm_term = max_C - min_C # 
-    # #%%
-    # Changes   = (Changes - min_C)/norm_term
     
     return beta, OMEGA, Changes, L, y_hat, sigma0, Kb0
 
 
-#%%
-##############################################################################
-def est_dynamical_oscillator_2nd_order_fourier(x, P, T, h, confounder, prec_param):   
-    if P != 2:
-        P = 2
-    
-    Nt, Nosc = x.shape
-    
-    Kb0      = np.eye(Nosc*(Nosc*2*P+1)*T)
-    # tmp      = np.kron(np.eye(Nosc*T), rand(Nosc*2*P+1, Nosc*2*P+1))
-    # Kb0      = 0.5 * (tmp @ tmp.T)
-    
-    mu_beta0 = np.zeros(Nosc*(Nosc*2*P+1)*T)
-    L        = np.nan * np.ones(Nt-T)
-    Changes  = np.nan * np.ones(Nt-T)
-    Entropy  = np.nan * np.ones(Nt-T)
-    
-    beta     = np.zeros((Nt-T, Nosc*Nosc, 2*P))
-    OMEGA    = np.zeros((Nt-T, Nosc))
-        
-    sigma    = 1/prec_param *  abs(rand(Nosc*T))
-    
-    theta_hat   = np.nan * np.ones((Nt-T, Nosc))
-    #%%
-    cnt = 1
-    
-    Total_Epoch = int((Nt-T)/T)
-    
-    for i in range(T, Nt, T):#(0, Nt-T-1, T):
-        #%%
-        print('Epoch: (%d / %d), index: %d'%(cnt, Total_Epoch, i))
-        #########################################################################
-        if T ==1:
-            phs_dif = x[i-1, :].reshape(1, Nosc) - x[i-1, :].reshape(Nosc, 1)
-            
-            tmp_sin  = np.sin(phs_dif)
-            tmp_cos  = np.cos(phs_dif)
-            tmp_sin2 = np.sin(2*phs_dif)
-            tmp_cos2 = np.cos(2*phs_dif)
-            
-            
-            tmp_cos  = tmp_cos  - np.eye(Nosc)
-            tmp_cos2 = tmp_cos2 - np.eye(Nosc)
-            
-            x_train = np.concatenate((tmp_cos, tmp_sin, tmp_cos2, tmp_sin2), axis=1)
-            
-            if confounder == True:
-                x_train = np.concatenate((x_train, np.ones((Nosc, 1))), axis=1)
-        else:
-            for t in range(0, T):
-                phs_dif  = x[(i-T)+t, :].reshape(1, Nosc) - x[(i-T)+t, :].reshape(Nosc, 1)
-                
-                tmp_cos  = np.cos(phs_dif)
-                tmp_sin  = np.sin(phs_dif)
-                
-                tmp_cos2 = np.cos(2*phs_dif)
-                tmp_sin2 = np.sin(2*phs_dif)
-                
-                tmp_cos  = tmp_cos  - np.eye(Nosc)
-                tmp_cos2 = tmp_cos2 - np.eye(Nosc)
-                
-                tmp     = np.concatenate((tmp_cos, tmp_sin, tmp_cos2, tmp_sin2), axis=1)
-                if t == 0:
-                    x_train = tmp
-                else:
-                    x_train = np.concatenate((x_train, tmp), axis=0)
-                    
-            if confounder == True:
-                x_train = np.concatenate((x_train, np.ones((Nosc*T, 1))), axis=1)
-        #########################################################################
-        if T ==1:
-            y_train = np.zeros((1, Nosc))
-            for n in range(Nosc):
-                theta_unwrap = np.unwrap(deepcopy(x[i-1:i+1, n]))
-                y_train[:, n] = (theta_unwrap[1] - theta_unwrap[0])/h
-        else:
-            y_train = np.zeros((T, Nosc))
-            for t in range(0, T, 1):
-                for n in range(Nosc):
-                    theta_unwrap = np.unwrap(deepcopy(x[(i-T)+t:(i-T)+t+2, n]))
-                    y_train[t, n] = (theta_unwrap[1] - theta_unwrap[0])/h
-                    
-                    # tmp_idx = np.arange(i+t, i+t+2, 1)
-                    # print('start:%d / end:%d'%(tmp_idx[0], tmp_idx[-1]))
-        y_train = y_train.reshape(-1, order='C')
-        Dx      = make_Dx(x_train, T, Nosc, 2*P, confounder)
-        #########################################################################
-        #### Prediction step : Update Model covarianvce (Observation noise)  
-        noise   = 1/prec_param
-        sigma   = np.diag(Dx @ Kb0 @ Dx.T) + noise
-        
-        # if i > 0:
-        #     sgm     = np.diag(deepcopy(sigma))
-        #     sigma   = np.diag(Dx @ Kb0 @ Dx.T + sgm)
-        # print(sigma[0])
-        #### Update step : Update posterior mean and covariance (coefficient) 
-        mu_beta, Kb, loglike, change_ratio = update_coeff(x_train, y_train, Dx, mu_beta0, Kb0, sigma, T, Nosc)
-    
-        mu_beta0   = deepcopy(mu_beta)
-        Kb0        = deepcopy(Kb)
-        sigma0     = deepcopy(sigma)
-        L[i-T]       = deepcopy(loglike)
-        Changes[i-T] = deepcopy(change_ratio)
-        Entropy[i-T] = entropy_of_gauss(mu_beta, Kb)
-        
-        # print(Entropy[i-T])
-        
-        tmp_y = (Dx @ mu_beta).reshape((T, Nosc), order='C')
-        if i == T:
-            y_hat = deepcopy(tmp_y)
-        else:
-            y_hat = np.concatenate((y_hat, deepcopy(tmp_y)), axis=0)
-        
-        tmp_beta = mu_beta.reshape((T*Nosc, Nosc*2*P+1))#B_hat.reshape((T*Nosc, Nosc*P+1))#
-        
-        for p in range(2*P):
-            idx = np.arange(0, Nosc, 1) + p*Nosc
-            beta[i-T:i, :, p]  = tmp_beta[:,idx].reshape((T, Nosc*Nosc))
-            
-        OMEGA[i-T:i, :] = tmp_beta[:,-1].reshape((T, Nosc))
-        cnt += 1
-    
-    #%% ## Apply normalized divergence as the changing ratio
-    # max_C     = (Changes[np.isnan(Changes)==False] ).max() # 
-    # min_C     = (Changes[np.isnan(Changes)==False] ).min() # 
-    # norm_term = max_C - min_C # 
-    # #%%
-    # Changes   = (Changes - min_C)/norm_term
-    
-    return beta, OMEGA, Changes, L, y_hat, sigma0, Kb0
+
 #%%
 def reconstruct_phase_response_curve(beta, omega, Nosc):
     Nt, Npair, Nparam = beta.shape

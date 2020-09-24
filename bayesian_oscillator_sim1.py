@@ -1,38 +1,24 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr  3 17:44:26 2020
-
-@author: yokoyama
-"""
-
-
-# simulating oscillation by Kuramoto model
-# 3 unit
-
 from IPython import get_ipython
 from copy import deepcopy, copy
 get_ipython().magic('reset -sf')
 #get_ipython().magic('cls')
 
 import os
-os.chdir('D:\\GitHub\\ChangeDetectSim\\')
+os.chdir('D:\\GitHub\\ChangeDetectSim\\') # Set full path of your corrent derectory
 
 current_path = os.getcwd()
 fig_save_dir = current_path + '\\figures\\sim1\\'
 
-if os.path.exists(fig_save_dir)==False:
+if os.path.exists(fig_save_dir)==False:  # Make the directory for figures
     os.makedirs(fig_save_dir)
 
-param_path = current_path + '\\save_data\\param_sim1\\'
-if os.path.exists(param_path)==False:
-    os.makedirs(param_path)
+param_path = current_path + '\\save_data\\param_sim1\\'# Set path of directory where the dataset of parameter settings are saved.
     
 import matplotlib.pylab as plt
-# plt.rcParams['savefig.dpi'] = 300 
-plt.rcParams['font.family']      = 'Arial'#"IPAexGothic"
-plt.rcParams['mathtext.fontset'] = 'stix' # math fontの設定
-plt.rcParams["font.size"]        = 26 # 全体のフォントサイズが変更されます。
-import networkx as nx
+plt.rcParams['font.family']      = 'Arial'#
+plt.rcParams['mathtext.fontset'] = 'stix' # math font setting
+plt.rcParams["font.size"]        = 26 # Font size
+
 #%%
 from my_modules.my_dynamical_bayes import *
 from my_modules.my_graph_visualization import *
@@ -40,20 +26,7 @@ from scipy.stats import zscore
 from numpy.random import *
 import numpy as np
 import glob
-#%%
-def random_adjacency_matrix(n):   
-    matrix = [[np.random.normal(loc=0.45, scale=.1, size=n) for i in range(n)] for j in range(n)]
-    matrix = np.array(matrix)[:,:,0]
-    # No vertex connects to itself
-    for i in range(n):
-        matrix[i, i] = 0
 
-    # If i is connected to j, j is connected to i
-    for i in range(n):
-        for j in range(n):
-            matrix[j, i] = matrix[i, j]
-
-    return matrix
 #%%
 name     = []
 ext      = []
@@ -63,7 +36,7 @@ for file in os.listdir(param_path):
     ext.append(split_str[1])
     
     print(split_str)
-#%%    
+#%% Load the parameter settings
 fullpath      = param_path + name[0] + ext[0]
 param_dict    = np.load(fullpath, encoding='ASCII', allow_pickle='True').item()
 Nosc          = param_dict['Nosc']
@@ -77,8 +50,9 @@ K2_tr         = param_dict['K2_tr']
 K_tr          = param_dict['K_tr']
 
 theta_init    = param_dict['theta_init']
+
 del param_dict
-#%%
+#%% Generate synthetic data
 dtheta        = np.zeros((Nt, Nosc))
 theta         = np.zeros((Nt, Nosc))
 theta[0, :]   = theta_init
@@ -111,8 +85,6 @@ for t in range(1, Nt):
         
         dtheta[t, i] = (theta_unwrap[1] - theta_unwrap[0])/h
 #%% plot phase
-        
-# fig_save_dir = current_path + '\\figures\\Bayesian_kuramoto_weak\\'
 
 axis=np.arange(theta.shape[0])
 
@@ -147,16 +119,15 @@ plt.savefig(fig_save_dir + 'phase_dynamics.png')
 plt.savefig(fig_save_dir + 'phase_dynamics.svg')
 plt.show()
 #%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-P = 1
-T = 1
+P = 1 # order of Forier series
+T = 1 # Time steps for sequential bayesian updates
 x = deepcopy(theta)
 
 noise_param = 1E-3 # covariance of process noise
 prec_param  = 1/noise_param # precision parameter, cov(process noise) = 1/prec_param
-#%%
+#%% Bayesian estimation and change point detection
 cnt = 1
 beta, OMEGA, Changes, L, y_hat, sigma0, Kb0 = est_dynamical_oscillator_1st_order_fourier(x, P, T, h, prec_param)
-# beta, OMEGA, Changes, L, y_hat, sigma0, Kb0 = est_dynamical_oscillator_2nd_order_fourier(x, P, T, h, confounder, prec_param)
 
 if len(OMEGA.shape)==3:
     OMEGA = OMEGA[:,:,0]

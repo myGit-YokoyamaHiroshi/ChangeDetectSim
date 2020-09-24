@@ -1,48 +1,30 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jun  4 11:14:53 2020
-
-@author: yokoyama
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jun  3 19:57:54 2020
-
-@author: yokoyama
-"""
-
-
 from IPython import get_ipython
-from copy import deepcopy, copy
+from copy import deepcopy
 get_ipython().magic('reset -sf')
 #get_ipython().magic('cls')
 
 import os
-os.chdir('D:\\GitHub\\ChangeDetectSim\\')
+os.chdir('D:\\GitHub\\ChangeDetectSim\\') # Set full path of your corrent derectory
 
 current_path = os.getcwd()
 fig_save_dir = current_path + '\\figures\\sim3\\'
 
-if os.path.exists(fig_save_dir)==False:
+if os.path.exists(fig_save_dir)==False: # Make the directory for figures
     os.makedirs(fig_save_dir)
 
-param_path = current_path + '\\save_data\\param_sim3\\'
-if os.path.exists(param_path)==False:
-    os.makedirs(param_path)
+param_path = current_path + '\\save_data\\param_sim3\\' # Set path of directory where the dataset of parameter settings are saved.
     
 import matplotlib.pylab as plt
-plt.rcParams['font.family']      = 'Arial'#"IPAexGothic"
-plt.rcParams['mathtext.fontset'] = 'stix' # math fontの設定
-plt.rcParams["font.size"]        = 26 # 全体のフォントサイズが変更されます。
-import networkx as nx
+plt.rcParams['font.family']      = 'Arial'#
+plt.rcParams['mathtext.fontset'] = 'stix' # math font setting
+plt.rcParams["font.size"]        = 26 # Font size
+
 #%%
 from my_modules.my_dynamical_bayes import *
 from my_modules.my_graph_visualization import *
 from scipy.stats import zscore
 from numpy.random import *
 import numpy as np
-import glob
 
 #%%
 name     = []
@@ -53,7 +35,7 @@ for file in os.listdir(param_path):
     ext.append(split_str[1])
     
     print(split_str)
-#%%    
+#%% Load the parameter settings
 fullpath      = param_path + name[0] + ext[0]
 param_dict    = np.load(fullpath, encoding='ASCII', allow_pickle='True').item()
 Nosc          = param_dict['Nosc']
@@ -69,7 +51,7 @@ K_tr          = param_dict['K_tr']
 theta_init    = param_dict['theta_init']
 
 del param_dict
-#%%
+#%% Generate synthetic data
 dtheta        = np.zeros((Nt, Nosc))
 theta         = np.zeros((Nt, Nosc))
 theta[0, :]   = theta_init
@@ -104,8 +86,6 @@ for t in range(1, Nt):
         dtheta[t, i] = (theta_unwrap[1] - theta_unwrap[0])/h
 #%% plot phase
         
-# fig_save_dir = current_path + '\\figures\\Bayesian_kuramoto_weak\\'
-
 axis=np.arange(theta.shape[0])
 
 fig = plt.figure(figsize=(20, 8))
@@ -139,14 +119,14 @@ plt.savefig(fig_save_dir + 'phase_dynamics.png')
 plt.savefig(fig_save_dir + 'phase_dynamics.svg')
 plt.show()
 #%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-P = 1
-T = 1
+P = 1 # order of Forier series
+T = 1 # Time steps for sequential bayesian updates
 x = deepcopy(theta)
 
 noise_param = 1E-3 # covariance of process noise
 # noise_param = 1E-6 # covariance of process noise
 prec_param  = 1/noise_param # precision parameter, cov(process noise) = 1/prec_param
-#%%
+#%% Bayesian estimation and change point detection
 cnt = 1
 beta, OMEGA, Changes, L, y_hat, sigma0, Kb0 = est_dynamical_oscillator_1st_order_fourier(x, P, T, h, prec_param)
 

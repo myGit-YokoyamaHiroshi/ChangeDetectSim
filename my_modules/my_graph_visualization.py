@@ -45,7 +45,8 @@ def vis_directed_graph(K, vmin, vmax):
     
     pc = mpl.collections.PatchCollection(edges, cmap=plt.cm.Blues)
     
-    
+    plt.xlim([-0.24, 1.24])
+    plt.ylim([-0.24, 1.24])
     pc.set_array(edge_colors)
     ax = plt.gca()
     ax.set_axis_off()
@@ -69,8 +70,8 @@ def plot_PRC(theta, dtheta, phi_delta_plot, PRC, K, vmin, vmax, Nosc):
                 plt.scatter(phi_delta, dphi, c = 'b', marker = '.')
                 # plt.plot(phi_delta_plot, prc.T, c=[0.5, 0.5, 0.5])
                 plt.plot(phi_delta_plot, np.median(prc,axis=0), c='r', linewidth = 3)
-                plt.xlabel('$\\phi_{%d} - \\phi_{%d} $'%(osc+1, ref+1))
-                plt.ylabel('$d \\phi_{%d} / dt $'%(ref+1))
+                plt.xlabel('$\\theta_{%d} - \\theta_{%d} $'%(osc+1, ref+1))
+                plt.ylabel('$d \\theta_{%d} / dt $'%(ref+1))
                 plt.xticks([0, np.pi, 2 * np.pi], ['$0$', '$\\pi$', '$2 \\pi$'])
                 
                 # plt.ylim(8, 24)

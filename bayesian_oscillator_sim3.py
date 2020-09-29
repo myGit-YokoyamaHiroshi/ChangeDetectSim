@@ -17,7 +17,7 @@ param_path = current_path + '\\save_data\\param_sim3\\' # Set path of directory 
 import matplotlib.pylab as plt
 plt.rcParams['font.family']      = 'Arial'#
 plt.rcParams['mathtext.fontset'] = 'stix' # math font setting
-plt.rcParams["font.size"]        = 26 # Font size
+plt.rcParams["font.size"]        = 28 # Font size
 
 #%%
 from my_modules.my_dynamical_bayes import *
@@ -102,18 +102,19 @@ for n in range(Nosc):
     plt.yticks([0, np.pi, 2*np.pi], labels=['0', '$\\pi$', '$2 \\pi$'])
     plt.grid()
     
-plt.xlabel('# sample', fontsize = 18)
+plt.xlabel('# sample')
 
 plt.show()
 #%% plot phase dynamics
 fig = plt.figure(figsize=(20, 4))
 plt.plot(axis, phase_dynamics)
-plt.title('simulated phase dynamics $(\\dfrac{d \\theta_{ij}}{dt})$')
+plt.title('simulated phase dynamics')
+plt.legend(bbox_to_anchor=(1.05, 1), labels = ['oscillator 1', 'oscillator 2', 'oscillator 3'], loc='upper left', borderaxespad=0, fontsize=26)
 plt.xticks(np.arange(0, Nt+1, int(Nt/3))) 
-plt.xlabel('# sample', fontsize = 18)
-plt.ylabel('$\\dfrac{d \\theta_{ij}}{dt} = \\omega_{i} + \\Gamma_{ij}$', fontsize = 18)
+plt.xlabel('# sample')
+plt.ylabel('phase velocity')
 plt.grid()
-plt.legend(bbox_to_anchor=(1.05, 1), labels = ['node 1', 'node 2', 'node 3'], loc='upper left', borderaxespad=0, fontsize=12)
+plt.legend(bbox_to_anchor=(1.05, 1), labels = ['oscillator 1', 'oscillator 2', 'oscillator 3'], loc='upper left', borderaxespad=0, fontsize=26)
 plt.subplots_adjust(right = 0.7)
 plt.savefig(fig_save_dir + 'phase_dynamics.png')
 plt.savefig(fig_save_dir + 'phase_dynamics.svg')
@@ -141,9 +142,9 @@ PRC, phi_dlt_plt  = reconstruct_phase_response_curve(beta, OMEGA, Nosc)
 fig = plt.figure(figsize=(20, 4))
 
 plt.plot(Time, OMEGA)
-plt.xlabel('# sample', fontsize = 18)
-plt.ylabel('natural frequency (a.u.)', fontsize = 18)
-plt.legend(bbox_to_anchor=(1.05, 1), labels = ['node 1', 'node 2', 'node 3'], loc='upper left', borderaxespad=0, fontsize=12)
+plt.xlabel('# sample')
+plt.ylabel('natural frequency (a.u.)')
+plt.legend(bbox_to_anchor=(1.05, 1), labels = ['oscillator 1', 'oscillator 2', 'oscillator 3'], loc='upper left', borderaxespad=0, fontsize=26)
 plt.xticks(np.arange(0, Nt+1, int(Nt/3))) 
 # plt.ylim(0.0, 4.0)
 plt.grid()
@@ -160,9 +161,9 @@ fig = plt.figure(figsize=(20, 4))
 
 plt.plot(Time[np.isnan(Changes)==False], Changes[np.isnan(Changes)==False]);
 plt.scatter(Time[idx], Changes[idx], marker = 'o', c = 'red', label = '> mean + 3SD');
-plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0, fontsize=12, frameon=False)
-plt.xlabel('# sample', fontsize = 18)
-plt.ylabel('Changing ratio (a.u.)', fontsize = 18)
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0, fontsize=26, frameon=False)
+plt.xlabel('# sample')
+plt.ylabel('Changing ratio (a.u.)')
 plt.xticks(np.arange(0, Nt+1, int(Nt/3))) 
 
 plt.subplots_adjust(right = 0.7)
@@ -175,8 +176,8 @@ plt.show()
 fig = plt.figure(figsize=(20, 4))
 
 plt.plot(Time[np.isnan(L)==False], L[np.isnan(L)==False]);
-plt.xlabel('# sample', fontsize = 18)
-plt.ylabel('Log-likelihood (a.u.)', fontsize = 18)
+plt.xlabel('# sample')
+plt.ylabel('Log-likelihood (a.u.)')
 plt.xticks(np.arange(0, Nt+1, int(Nt/3))) 
 
 plt.subplots_adjust(right = 0.7)
@@ -196,13 +197,13 @@ fig = plt.figure(figsize=(20, 4))
 line1 = plt.plot(Time, y_hat, c = 'k', linestyle = '-', zorder = 1, label = 'pred')
 line2 = plt.plot(axis, phase_dynamics, c = np.array([0.5, 0.5, 0.5]), linewidth = 4,zorder = 0, label = 'true')
 plt.xticks(np.arange(0, Nt+1, int(Nt/3))) 
-plt.xlabel('# sample', fontsize = 18)
-plt.ylabel('$\\dfrac{d \\theta_{ij}}{dt} = \\omega_{i} + \\Gamma_{ij}$', fontsize = 18)
+plt.xlabel('# sample')
+plt.ylabel('phase velocity')
 plt.grid()
 
 handle = [line1[-1], line2[-1]]
 labels = ['pred.', 'true']
-plt.legend(handle, labels, bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0, fontsize=12)
+plt.legend(handle, labels, bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0, fontsize=26)
 plt.subplots_adjust(right = 0.7)
 plt.savefig(fig_save_dir + 'phase_dynamics_est.png')
 plt.savefig(fig_save_dir + 'phase_dynamics_est.svg')

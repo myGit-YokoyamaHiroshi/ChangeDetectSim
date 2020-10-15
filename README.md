@@ -14,7 +14,7 @@ This is a python script to detect the change point of dynamical structures in th
 &ensp;&ensp;│&ensp;&ensp;&ensp;└─ my_graph_visualization.py … contains some function to visualize the estimation results<br>
 &ensp;&ensp;│<br>
 &ensp;&ensp;└── bayesian_oscillator_sim1.py, bayesian_oscillator_sim2.py, bayesian_oscillator_sim3.py <br>
-&ensp;&ensp;&ensp;&ensp;&ensp;… sample scripts containing a sample example for how to use of the module “my_dynamical_bayes.py”  <br>
+&ensp;&e&ensp;&ensp;nsp;&ensp;&ensp;&ensp;… sample scripts containing a sample example for how to use of the module “my_dynamical_bayes.py”  <br>
 
 &ensp;*** For the implementation details, refer to paper (preprint), available at: https://doi.org/10.1101/2020.10.13.335356 *** 
 

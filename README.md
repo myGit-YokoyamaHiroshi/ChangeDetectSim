@@ -29,14 +29,14 @@ This is sample of python implementation for detecting the changes in the synchro
 
 # Requirements<br>
 &ensp; Operation has been confirmed only under the following environment. <br>
-&ensp; - Python 3.8.3 <br>
-&ensp; - conda 4.8.4  <br>
-&ensp; - Spyder 4.1.4 <br>
-&ensp; - numpy 1.18.5 <br>
-&ensp; - scipy 1.5.0 <br>
-&ensp; - matplotlib 3.2.2<br>
-&ensp; - networkx 2.4 <br>
-&ensp; - IPython 7.16.1 <br>
+&ensp;&ensp; - Python 3.8.3 <br>
+&ensp;&ensp; - conda 4.8.4  <br>
+&ensp;&ensp; - Spyder 4.1.4 <br>
+&ensp;&ensp; - numpy 1.18.5 <br>
+&ensp;&ensp; - scipy 1.5.0 <br>
+&ensp;&ensp; - matplotlib 3.2.2<br>
+&ensp;&ensp; - networkx 2.4 <br>
+&ensp;&ensp; - IPython 7.16.1 <br>
 &ensp; <br>
 &ensp; These sample scripts are not guaranteed to run on any other version in Python than the above.<br>
 &ensp; <br>

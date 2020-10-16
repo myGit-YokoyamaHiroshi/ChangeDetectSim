@@ -1,5 +1,5 @@
 # ChangeDetectSim
-This is a python script to detect the change point of dynamical structures in the synchronous phase oscillatory network, based on the dynamical Bayesian inference. <br>
+This is sample script for detecting the changes in the synchronous oscillatory networks, based on the dynamical Bayesian inference. <br>
 *** For the implementation details, refer to paper (preprint), available at: https://doi.org/10.1101/2020.10.13.335356
 
 # Folder structures<br>

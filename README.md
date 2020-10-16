@@ -1,5 +1,5 @@
 # ChangeDetectSim
-This is sample script for detecting the changes in the synchronous oscillatory networks, based on the dynamical Bayesian inference. <br>
+This is sample of python implementation for detecting the changes in the synchronous oscillatory networks, based on the dynamical Bayesian inference. <br>
 
 # Folder structures<br>
 \ChangeDetectSim<br>

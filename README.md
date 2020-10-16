@@ -16,7 +16,7 @@ This is sample script for detecting the changes in the synchronous oscillatory n
 &ensp;&ensp;├─ bayesian_oscillator_sim2.py <br>
 &ensp;&ensp;└─ bayesian_oscillator_sim3.py <br>
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… contains sample examples for how to use of the module “my_dynamical_bayes.py”  <br>
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… (These scripts reproduce the simulation results performed in the original papr (Yokoyama & Kitajo, 2020) )<br>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… (These scripts reproduce the simulation results performed in the original paper (Yokoyama & Kitajo, 2020) )<br>
 <br>
 &ensp;*** For the implementation details, refer to paper (preprint), available at: https://doi.org/10.1101/2020.10.13.335356
 

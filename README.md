@@ -27,6 +27,14 @@ This is sample of python implementation for detecting the changes in the synchro
 <br>
 &ensp;*** For the implementation details, refer to paper (preprint), available at: https://doi.org/10.1101/2020.10.13.335356
 
+# Requirements<br>
+&ensp; Operation has been confirmed only under the following environment. <br>
+&ensp; - Python 3.8.3 <br>
+&ensp; - Spyder 4.1.4 <br>
+&ensp; - IPython 7.16.1 <br>
+&ensp; <br>
+&ensp; *** These sample scripts are not guaranteed to run on any other version in Python than the above.<br>
+&ensp; <br>
 # Authors<br>
 &ensp; Hiroshi Yokoyama<br>
 &ensp;&ensp;(Division of Neural Dynamics, Department of System Neuroscience, National Institute for Physiological Sciences, Japan)<br>

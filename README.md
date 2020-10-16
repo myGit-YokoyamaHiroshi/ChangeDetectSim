@@ -12,6 +12,12 @@ This is sample of python implementation for detecting the changes in the synchro
 &ensp;&ensp;│&ensp;&ensp;&ensp;├─ my_dynamical_bayes.py … contains main modules of dynamical Bayesian inference<br>
 &ensp;&ensp;│&ensp;&ensp;&ensp;└─ my_graph_visualization.py … contains some function to visualize the estimation results<br>
 &ensp;&ensp;│<br>
+&ensp;&ensp;├── \save_data <br>
+&ensp;&ensp;│&ensp;&ensp;&ensp;├─ \param_sim1\Sim_param_sim1.npy <br>
+&ensp;&ensp;│&ensp;&ensp;&ensp;├─ \param_sim2\Sim_param_sim2.npy <br>
+&ensp;&ensp;│&ensp;&ensp;&ensp;└─ \param_sim3\Sim_param_sim3.npy <br>
+&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;… contains the sample parameter's settings
+&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp; &ensp; &ensp; to reproduce the simulation results performed in the original paper (Yokoyama & Kitajo, 2020)
 &ensp;&ensp;├─ bayesian_oscillator_sim1.py <br>
 &ensp;&ensp;├─ bayesian_oscillator_sim2.py <br>
 &ensp;&ensp;└─ bayesian_oscillator_sim3.py <br>

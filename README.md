@@ -38,7 +38,7 @@ This is sample of python implementation for detecting the changes in the synchro
 &ensp;&ensp; - networkx 2.4 <br>
 &ensp;&ensp; - IPython 7.16.1 <br>
 &ensp; <br>
-&ensp; These sample scripts are not guaranteed to run on any other version in Python than the above.<br>
+&ensp; The sample scripts are not guaranteed to run on any other version in Python than the above.<br>
 &ensp; <br>
 # Authors<br>
 &ensp; Hiroshi Yokoyama<br>

@@ -57,7 +57,7 @@ def my_det(Mtrx):
 def func_kuramoto(theta, K, omega):
     Nosc = theta.shape[0]
     phase_diff = theta.reshape(1, Nosc) - theta.reshape(Nosc, 1)
-    phase_dynamics = omega + np.sum(K @ np.sin(phase_diff.T), axis=0) + randn(Nosc)
+    phase_dynamics = omega + np.sum(K * np.sin(phase_diff.T), axis=0) + randn(Nosc)
     return phase_dynamics
 
 def func_oscillator_approx_fourier_series(theta, K1, K2, omega, noise_scale):
@@ -65,21 +65,41 @@ def func_oscillator_approx_fourier_series(theta, K1, K2, omega, noise_scale):
     phase_diff = theta.reshape(1, Nosc) - theta.reshape(Nosc, 1)
     
     if len(K1.shape)==2:
-        phase_dynamics = omega + np.sum(K1 @ np.cos(phase_diff.T), axis=0) + np.sum(K2 @ np.sin(phase_diff.T), axis=0) + noise_scale * randn(Nosc)
+        phase_dynamics = omega + np.sum(K1.T * np.cos(phase_diff.T), axis=0) + np.sum(K2.T * np.sin(phase_diff.T), axis=0) + noise_scale * randn(Nosc)
     elif len(K1.shape)==3:
         _,_,Norder = K1.shape
         
         for n in range(Norder):
             if n == 0:
-                Cos = np.sum(K1[:,:,n] @ np.cos(phase_diff.T), axis=0)
-                Sin = np.sum(K2[:,:,n] @ np.sin(phase_diff.T), axis=0)
+                Cos = np.sum(K1[:,:,n].T * np.cos(phase_diff.T), axis=0)
+                Sin = np.sum(K2[:,:,n].T * np.sin(phase_diff.T), axis=0)
             else:
-                Cos += np.sum(K1[:,:,n] @ np.cos(n * phase_diff.T), axis=0)
-                Sin += np.sum(K2[:,:,n] @ np.sin(n * phase_diff.T), axis=0)
+                Cos += np.sum(K1[:,:,n].T * np.cos(n * phase_diff.T), axis=0)
+                Sin += np.sum(K2[:,:,n] .T* np.sin(n * phase_diff.T), axis=0)
         
         phase_dynamics = omega + Cos + Sin + noise_scale * randn(Nosc)
         
     return phase_dynamics
+# def func_oscillator_approx_fourier_series(theta, K1, K2, omega, noise_scale):
+#     Nosc = theta.shape[0]
+#     phase_diff = theta.reshape(1, Nosc) - theta.reshape(Nosc, 1)
+    
+#     if len(K1.shape)==2:
+#         phase_dynamics = omega + np.sum(K1 * np.cos(phase_diff.T), axis=0) + np.sum(K2 * np.sin(phase_diff.T), axis=0) + noise_scale * randn(Nosc)
+#     elif len(K1.shape)==3:
+#         _,_,Norder = K1.shape
+        
+#         for n in range(Norder):
+#             if n == 0:
+#                 Cos = np.sum(K1[:,:,n] * np.cos(phase_diff.T), axis=0)
+#                 Sin = np.sum(K2[:,:,n] * np.sin(phase_diff.T), axis=0)
+#             else:
+#                 Cos += np.sum(K1[:,:,n] * np.cos(n * phase_diff.T), axis=0)
+#                 Sin += np.sum(K2[:,:,n] * np.sin(n * phase_diff.T), axis=0)
+        
+#         phase_dynamics = omega + Cos + Sin + noise_scale * randn(Nosc)
+        
+#     return phase_dynamics
 
 def runge_kutta_kuramoto(h, func, theta_now, K, omega):
     k1=func(theta_now, K, omega)#omega+K*np.sin(theta_now[::-1]-theta_now)

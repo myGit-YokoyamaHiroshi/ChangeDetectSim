@@ -27,7 +27,10 @@ plt.rcParams['mathtext.fontset'] = 'stix' # math font setting
 plt.rcParams["font.size"]        = 26 # Font size
 
 #%%
-from my_modules.my_dynamical_bayes import *
+# from my_modules.my_dynamical_bayes import *
+from my_modules.my_oscillator_model import *
+from my_modules.my_dynamical_bayes_mod import my_Bayesian_CP
+
 from my_modules.my_graph_visualization import *
 from scipy.stats import zscore
 from numpy.random import *
@@ -172,12 +175,24 @@ P = 1 # order of Forier series
 T = 1 # Time steps for sequential bayesian updates
 x = deepcopy(theta)
 
-noise_param = 1E-4#1E-3 # covariance of process noise
+noise_param = 1E-4 # covariance of process noise
 prec_param  = 1/noise_param # precision parameter, cov(process noise) = 1/prec_param
 
 #%% Bayesian estimation and change point detection
 cnt = 1
-beta, OMEGA, Changes, L, y_hat, sigma0, Kb0 = est_dynamical_oscillator_1st_order_fourier(x, P, T, h, prec_param)
+
+# beta, OMEGA, Changes, L, y_hat, sigma0, Kb0 = est_dynamical_oscillator_1st_order_fourier(x, P, T, h, prec_param)
+
+bayes_cp = my_Bayesian_CP(x, P, T, h, prec_param)
+bayes_cp.est_dynamical_oscillator_1st_order_fourier()
+
+beta    = bayes_cp.beta
+OMEGA   = bayes_cp.omega
+Changes = bayes_cp.Changes
+L       = bayes_cp.loglike
+y_hat   = bayes_cp.y_hat
+
+#sigma0, Kb0 
 
 if len(OMEGA.shape)==3:
     OMEGA = OMEGA[:,:,0]

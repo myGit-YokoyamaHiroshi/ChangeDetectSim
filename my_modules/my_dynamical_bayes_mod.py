@@ -54,56 +54,14 @@ class my_Bayesian_CP:
             #%%
             print('Epoch: (%d / %d), index: %d'%(cnt, Total_Epoch, i))
             #########################################################################
-            if T ==1:
-                tmp_sin = np.sin(x[i-1, :].reshape(1, Nosc) - x[i-1, :].reshape(Nosc, 1))
-                tmp_cos = np.cos(x[i-1, :].reshape(1, Nosc) - x[i-1, :].reshape(Nosc, 1))
-                tmp_cos = tmp_cos - np.eye(Nosc)
-                
-                x_train = np.concatenate((tmp_cos, tmp_sin), axis=1)
-                x_train = np.concatenate((x_train, np.ones((Nosc, 1))), axis=1)
-            else:
-                for t in range(0, T):
-                    tmp_cos = np.cos(x[(i-T)+t, :].reshape(1, Nosc) - x[(i-T)+t, :].reshape(Nosc, 1))
-                    tmp_sin = np.sin(x[(i-T)+t, :].reshape(1, Nosc) - x[(i-T)+t, :].reshape(Nosc, 1))
-                    
-                    tmp_cos = tmp_cos - np.eye(Nosc)
-                    
-                    tmp     = np.concatenate((tmp_cos, tmp_sin), axis=1)
-                    if t == 0:
-                        x_train = tmp
-                    else:
-                        x_train = np.concatenate((x_train, tmp), axis=0)                
-    
-                x_train = np.concatenate((x_train, np.ones((Nosc*T, 1))), axis=1)
+            my_Bayesian_CP.make_fourier_features(self, x, i)            
+            Dx      = my_Bayesian_CP.make_Dx(self)#(x_train, T, Nosc, 2*P)
+            self.Dx = Dx
             #########################################################################
-            if T ==1:
-                y_train = np.zeros((1, Nosc))
-                for n in range(Nosc):
-                    theta_unwrap = np.unwrap(deepcopy(x[i-1:i+1, n]))
-                    y_train[:, n] = (theta_unwrap[1] - theta_unwrap[0])/h
-            else:
-                y_train = np.zeros((T, Nosc))
-                for t in range(0, T, 1):
-                    for n in range(Nosc):
-                        theta_unwrap = np.unwrap(deepcopy(x[(i-T)+t:(i-T)+t+2, n]))
-                        y_train[t, n] = (theta_unwrap[1] - theta_unwrap[0])/h
-                        
-                        # tmp_idx = np.arange(i+t, i+t+2, 1)
-                        # print('start:%d / end:%d'%(tmp_idx[0], tmp_idx[-1]))
-            y_train = y_train.reshape(-1, order='C')
-            
-            
-            self.x_train = x_train
-            self.y_train = y_train
-            
-            Dx           = my_Bayesian_CP.make_Dx(self)#(x_train, T, Nosc, 2*P)
-            self.Dx      = Dx
-            #########################################################################
-            #### Prediction step : Update Model covarianvce (Observation noise)  
+            #### Prediction step : Estimate posterior predictive distribution
             noise   = 1/prec_param
             sigma   = np.diag(Dx @ Kb0 @ Dx.T) + noise
             
-            ##########################################################################
             #### Update step : Update prior distribution (update model parameter) 
             mu_beta, Kb, loglike, change_ratio = my_Bayesian_CP.update_coeff(self, mu_beta0, Kb0, sigma)
         
@@ -138,6 +96,53 @@ class my_Bayesian_CP:
         self.Kb0     = Kb0
         
         # return beta, OMEGA, Changes, L, y_hat, sigma0, Kb0
+##############################################################################    
+    def make_fourier_features(self, x, idx):
+        Nosc = self.Nosc
+        T    = self.T
+        h    = self.h
+        i    = idx
+        
+        if T ==1:
+            tmp_sin = np.sin(x[i-1, :].reshape(1, Nosc) - x[i-1, :].reshape(Nosc, 1))
+            tmp_cos = np.cos(x[i-1, :].reshape(1, Nosc) - x[i-1, :].reshape(Nosc, 1))
+            tmp_cos = tmp_cos - np.eye(Nosc)
+            
+            x_train = np.concatenate((tmp_cos, tmp_sin), axis=1)
+            x_train = np.concatenate((x_train, np.ones((Nosc, 1))), axis=1)
+        else:
+            for t in range(0, T):
+                tmp_cos = np.cos(x[(i-T)+t, :].reshape(1, Nosc) - x[(i-T)+t, :].reshape(Nosc, 1))
+                tmp_sin = np.sin(x[(i-T)+t, :].reshape(1, Nosc) - x[(i-T)+t, :].reshape(Nosc, 1))
+                
+                tmp_cos = tmp_cos - np.eye(Nosc)
+                
+                tmp     = np.concatenate((tmp_cos, tmp_sin), axis=1)
+                if t == 0:
+                    x_train = tmp
+                else:
+                    x_train = np.concatenate((x_train, tmp), axis=0)                
+
+            x_train = np.concatenate((x_train, np.ones((Nosc*T, 1))), axis=1)
+        #########################################################################
+        if T ==1:
+            y_train = np.zeros((1, Nosc))
+            for n in range(Nosc):
+                theta_unwrap = np.unwrap(deepcopy(x[i-1:i+1, n]))
+                y_train[:, n] = (theta_unwrap[1] - theta_unwrap[0])/h
+        else:
+            y_train = np.zeros((T, Nosc))
+            for t in range(0, T, 1):
+                for n in range(Nosc):
+                    theta_unwrap = np.unwrap(deepcopy(x[(i-T)+t:(i-T)+t+2, n]))
+                    y_train[t, n] = (theta_unwrap[1] - theta_unwrap[0])/h
+                    
+                    # tmp_idx = np.arange(i+t, i+t+2, 1)
+                    # print('start:%d / end:%d'%(tmp_idx[0], tmp_idx[-1]))
+        y_train = y_train.reshape(-1, order='C')
+        
+        self.x_train = x_train
+        self.y_train = y_train
 ##############################################################################
     
     def make_Dx(self):#(X, T, N, P):
@@ -166,7 +171,7 @@ class my_Bayesian_CP:
             
         return Dx
     
-    ##############################################################################
+##############################################################################
     def update_coeff(self, mu_beta0, Kb0, sigma0):#(X, Y, Dx, mu_beta, Kb, sigma0, T, N):
         Y  = self.y_train
         Dx = self.Dx

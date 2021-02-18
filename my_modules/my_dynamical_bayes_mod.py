@@ -103,6 +103,8 @@ class my_Bayesian_CP:
             noise   = 1/prec_param
             sigma   = np.diag(Dx @ Kb0 @ Dx.T) + noise
             
+            ##########################################################################
+            #### Update step : Update prior distribution (update model parameter) 
             mu_beta, Kb, loglike, change_ratio = my_Bayesian_CP.update_coeff(self, mu_beta0, Kb0, sigma)
         
             mu_beta0   = deepcopy(mu_beta)

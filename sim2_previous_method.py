@@ -23,7 +23,7 @@ plt.rcParams['mathtext.fontset'] = 'stix' # math font setting
 plt.rcParams["font.size"]        = 26 # Font size
 
 #%%
-from my_modules.my_dynamical_bayes import *
+# from my_modules.my_dynamical_bayes import *
 from my_modules.my_graph_visualization import *
 from scipy.stats import zscore
 from numpy.random import *

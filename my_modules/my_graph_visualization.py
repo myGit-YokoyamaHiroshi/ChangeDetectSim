@@ -26,7 +26,7 @@ def vis_directed_graph(K, vmin, vmax):
     
     node_sizes  = [800  for i in range(len(G))]
     M           = G.number_of_edges()
-    edge_colors = range(2, M+2)
+    edge_colors = M * np.ones(M, dtype = int)
     edge_alphas = weight/vmax
     edge_alphas[edge_alphas>1] = 1
     

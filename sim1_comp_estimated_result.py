@@ -81,9 +81,9 @@ lgnd  = ['$N_{osc}$ = %2d'%(n) for n in Ncond]
 fname = 'estimation_result_Twin_'
 
 epoch_idx = np.array([100, 500, 1000, 2000, 3000, 4000]) 
-vmin      = 0.0
-vmax      = 1.0
-cmaps     = 'Blues'
+vmin      = -0.7
+vmax      =  0.7
+cmaps     = 'bwr'
 
 
 fig       = plt.figure(constrained_layout = False, figsize=(10, 12));
@@ -228,15 +228,15 @@ for i in range(4):
     K  = K_all[i]
     
     a_ax = plt.Subplot(fig, inner[0])
-    vis_heatmap(a, vmin, vmax, cmaps, a_ax, np.array(['\n $a_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.01)
+    vis_heatmap(a, vmin, vmax, cmaps, a_ax, np.array(['\n $a_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.001)
     fig.add_subplot(a_ax)
     
     b_ax = plt.Subplot(fig, inner[1])
-    vis_heatmap(b, vmin, vmax, cmaps, b_ax, np.array(['$N_{osc}$ = %2d \n $b_{ij}$'%(Ncond[i]), 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.01)
+    vis_heatmap(b, vmin, vmax, cmaps, b_ax, np.array(['$N_{osc}$ = %2d \n $b_{ij}$'%(Ncond[i]), 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.001)
     fig.add_subplot(b_ax)
     
     k_ax = plt.Subplot(fig, inner[2])
-    vis_heatmap(K, vmin, vmax, cmaps, k_ax, np.array(['\n $K_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.01)
+    vis_heatmap(K, vmin, vmax, cmaps, k_ax, np.array(['\n $K_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.001)
     fig.add_subplot(k_ax)
     
     

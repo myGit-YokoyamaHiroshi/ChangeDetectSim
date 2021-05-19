@@ -29,7 +29,7 @@ z
    <g id="matplotlib.axis_1">
     <g id="xtick_1">
      <g id="line2d_1">
-      <path clip-path="url(#p758b22f4b8)" d="M 217.636364 252 
+      <path clip-path="url(#p766268900d)" d="M 217.636364 252 
 L 217.636364 34.56 
 " style="fill:none;stroke:#b0b0b0;stroke-linecap:square;stroke-width:0.8;"/>
      </g>
@@ -37,10 +37,10 @@ L 217.636364 34.56
       <defs>
        <path d="M 0 0 
 L 0 3.5 
-" id="m6f862a1639" style="stroke:#000000;stroke-width:0.8;"/>
+" id="m5f8e1620a4" style="stroke:#000000;stroke-width:0.8;"/>
       </defs>
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="217.636364" xlink:href="#m6f862a1639" y="252"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="217.636364" xlink:href="#m5f8e1620a4" y="252"/>
       </g>
      </g>
      <g id="text_1">
@@ -79,13 +79,13 @@ z
     </g>
     <g id="xtick_2">
      <g id="line2d_3">
-      <path clip-path="url(#p758b22f4b8)" d="M 594.188276 252 
+      <path clip-path="url(#p766268900d)" d="M 594.188276 252 
 L 594.188276 34.56 
 " style="fill:none;stroke:#b0b0b0;stroke-linecap:square;stroke-width:0.8;"/>
      </g>
      <g id="line2d_4">
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="594.188276" xlink:href="#m6f862a1639" y="252"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="594.188276" xlink:href="#m5f8e1620a4" y="252"/>
       </g>
      </g>
      <g id="text_2">
@@ -126,13 +126,13 @@ z
     </g>
     <g id="xtick_3">
      <g id="line2d_5">
-      <path clip-path="url(#p758b22f4b8)" d="M 970.740188 252 
+      <path clip-path="url(#p766268900d)" d="M 970.740188 252 
 L 970.740188 34.56 
 " style="fill:none;stroke:#b0b0b0;stroke-linecap:square;stroke-width:0.8;"/>
      </g>
      <g id="line2d_6">
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="970.740188" xlink:href="#m6f862a1639" y="252"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="970.740188" xlink:href="#m5f8e1620a4" y="252"/>
       </g>
      </g>
      <g id="text_3">
@@ -384,18 +384,18 @@ z
    <g id="matplotlib.axis_2">
     <g id="ytick_1">
      <g id="line2d_7">
-      <path clip-path="url(#p758b22f4b8)" d="M 180 233.698938 
-L 1008 233.698938 
+      <path clip-path="url(#p766268900d)" d="M 180 233.764187 
+L 1008 233.764187 
 " style="fill:none;stroke:#b0b0b0;stroke-linecap:square;stroke-width:0.8;"/>
      </g>
      <g id="line2d_8">
       <defs>
        <path d="M 0 0 
 L -3.5 0 
-" id="m4c57f9de13" style="stroke:#000000;stroke-width:0.8;"/>
+" id="m44f6906d0a" style="stroke:#000000;stroke-width:0.8;"/>
       </defs>
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="180" xlink:href="#m4c57f9de13" y="233.698938"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="180" xlink:href="#m44f6906d0a" y="233.764187"/>
       </g>
      </g>
      <g id="text_5">
@@ -419,7 +419,7 @@ L 37.25 71.875
 z
 " id="ArialMT-49"/>
       </defs>
-      <g transform="translate(99.980625 243.004094)scale(0.26 -0.26)">
+      <g transform="translate(99.980625 243.069343)scale(0.26 -0.26)">
        <use xlink:href="#ArialMT-8722"/>
        <use x="58.398438" xlink:href="#ArialMT-49"/>
        <use x="114.013672" xlink:href="#ArialMT-48"/>
@@ -430,13 +430,13 @@ z
     </g>
     <g id="ytick_2">
      <g id="line2d_9">
-      <path clip-path="url(#p758b22f4b8)" d="M 180 139.071287 
-L 1008 139.071287 
+      <path clip-path="url(#p766268900d)" d="M 180 139.103911 
+L 1008 139.103911 
 " style="fill:none;stroke:#b0b0b0;stroke-linecap:square;stroke-width:0.8;"/>
      </g>
      <g id="line2d_10">
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="180" xlink:href="#m4c57f9de13" y="139.071287"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="180" xlink:href="#m44f6906d0a" y="139.103911"/>
       </g>
      </g>
      <g id="text_6">
@@ -468,7 +468,7 @@ Q 5.03125 9.71875 4.15625 18.75
 z
 " id="ArialMT-53"/>
       </defs>
-      <g transform="translate(114.439063 148.376443)scale(0.26 -0.26)">
+      <g transform="translate(114.439063 148.409068)scale(0.26 -0.26)">
        <use xlink:href="#ArialMT-8722"/>
        <use x="58.398438" xlink:href="#ArialMT-53"/>
        <use x="114.013672" xlink:href="#ArialMT-48"/>
@@ -478,13 +478,13 @@ z
     </g>
     <g id="ytick_3">
      <g id="line2d_11">
-      <path clip-path="url(#p758b22f4b8)" d="M 180 44.443636 
+      <path clip-path="url(#p766268900d)" d="M 180 44.443636 
 L 1008 44.443636 
 " style="fill:none;stroke:#b0b0b0;stroke-linecap:square;stroke-width:0.8;"/>
      </g>
      <g id="line2d_12">
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="180" xlink:href="#m4c57f9de13" y="44.443636"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="180" xlink:href="#m44f6906d0a" y="44.443636"/>
       </g>
      </g>
      <g id="text_7">
@@ -716,24 +716,31 @@ z
     </g>
    </g>
    <g id="line2d_13">
-    <path clip-path="url(#p758b22f4b8)" d="M 217.636364 242.116364 
-L 217.82464 93.983129 
-L 218.012916 57.016422 
-L 218.201192 47.766408 
-L 218.389467 45.405005 
-L 218.577743 44.796514 
-L 218.954295 44.553528 
-L 219.707399 44.564798 
-L 220.272227 44.716597 
-L 220.837055 44.998288 
-L 221.213607 44.926732 
-L 221.966711 44.559233 
-L 222.719814 44.465054 
-L 224.979126 44.445746 
-L 235.710855 44.458855 
-L 245.124653 44.443647 
-L 970.363636 44.443641 
-L 970.363636 44.443641 
+    <path clip-path="url(#p766268900d)" d="M 217.636364 242.116364 
+L 217.82464 94.024118 
+L 218.012916 56.970964 
+L 218.201192 47.777808 
+L 218.389467 45.420146 
+L 218.577743 44.783563 
+L 218.954295 44.566219 
+L 219.519123 44.549532 
+L 220.083951 44.628385 
+L 221.025331 45.014426 
+L 222.343263 44.486966 
+L 223.472918 44.45333 
+L 231.945336 44.527453 
+L 232.510164 44.583413 
+L 232.69844 44.515473 
+L 232.886716 44.592665 
+L 233.451544 44.502178 
+L 234.204648 44.599721 
+L 234.392924 44.479123 
+L 234.769476 44.479814 
+L 236.652235 44.446794 
+L 280.143981 44.44373 
+L 635.044158 44.443664 
+L 970.363636 44.443698 
+L 970.363636 44.443698 
 " style="fill:none;stroke:#1f77b4;stroke-linecap:square;stroke-width:1.5;"/>
    </g>
    <g id="patch_3">
@@ -759,7 +766,7 @@ L 1008 34.56
   </g>
  </g>
  <defs>
-  <clipPath id="p758b22f4b8">
+  <clipPath id="p766268900d">
    <rect height="217.44" width="828" x="180" y="34.56"/>
   </clipPath>
  </defs>

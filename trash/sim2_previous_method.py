@@ -5,8 +5,7 @@ get_ipython().magic('reset -sf')
 
 import os
 os.chdir('D:\\GitHub\\ChangeDetectSim\\')
-# os.chdir('C:\\Users\\H.yokoyama\\Documents\\Python_Scripts\\ChangeDetectSim')
-# os.chdir('D:\\Python_Scripts\\test_myBayesianModel_PRC\\') 
+
 
 sim_name     = 'sim2'
 current_path = os.getcwd()

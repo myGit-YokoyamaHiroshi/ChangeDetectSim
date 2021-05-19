@@ -89,38 +89,38 @@ if  (len(name) == 0) & (len(ext) == 0): #
         
     theta_init    = np.random.uniform(low = 0, high = 2*np.pi, size = Nosc)
     
-    ####### Generate synthetic data
-    dtheta        = np.zeros((Nt, Nosc))
-    theta         = np.zeros((Nt, Nosc))
-    theta[0, :]   = theta_init
-    noise_scale   = 0.01
+    # ####### Generate synthetic data
+    # dtheta        = np.zeros((Nt, Nosc))
+    # theta         = np.zeros((Nt, Nosc))
+    # theta[0, :]   = theta_init
+    # noise_scale   = 0.01
     
-    phase_dynamics       = np.zeros((Nt, Nosc))
-    phase_dynamics[0, :] = func_oscillator_approx_fourier_series(theta[0, :], K1_tr[:,:,0], K2_tr[:,:,0], omega, noise_scale)
-    for t in range(1, Nt):
-        if t < int(Nt/3):
-            Nst = 0
-            noise_scale = 0.01
-        elif int(Nt/3) <= t < int(Nt*2/3):
-            Nst = 1
-            noise_scale = 0.01
-        else:
-            Nst = 2
-            noise_scale = 0.01
+    # phase_dynamics       = np.zeros((Nt, Nosc))
+    # phase_dynamics[0, :] = func_oscillator_approx_fourier_series(theta[0, :], K1_tr[:,:,0], K2_tr[:,:,0], omega, noise_scale)
+    # for t in range(1, Nt):
+    #     if t < int(Nt/3):
+    #         Nst = 0
+    #         noise_scale = 0.01
+    #     elif int(Nt/3) <= t < int(Nt*2/3):
+    #         Nst = 1
+    #         noise_scale = 0.01
+    #     else:
+    #         Nst = 2
+    #         noise_scale = 0.01
         
-        K1 = K1_tr[:,:,Nst]
-        K2 = K2_tr[:,:,Nst]
+    #     K1 = K1_tr[:,:,Nst]
+    #     K2 = K2_tr[:,:,Nst]
         
-        theta_now  = theta[t-1, :]
-        theta_next = runge_kutta_oscillator_approx_fourier_series(h, func_oscillator_approx_fourier_series, theta_now, K1, K2, omega, noise_scale)
+    #     theta_now  = theta[t-1, :]
+    #     theta_next = runge_kutta_oscillator_approx_fourier_series(h, func_oscillator_approx_fourier_series, theta_now, K1, K2, omega, noise_scale)
         
-        theta[t, :]          = theta_next.reshape(1, Nosc)
-        phase_dynamics[t, :] = func_oscillator_approx_fourier_series(theta[t, :], K1, K2, omega, noise_scale)
+    #     theta[t, :]          = theta_next.reshape(1, Nosc)
+    #     phase_dynamics[t, :] = func_oscillator_approx_fourier_series(theta[t, :], K1, K2, omega, noise_scale)
     
-        for i in range(Nosc):
-            theta_unwrap = np.unwrap(deepcopy(theta[t-1:t+1, i]))
+    #     for i in range(Nosc):
+    #         theta_unwrap = np.unwrap(deepcopy(theta[t-1:t+1, i]))
             
-            dtheta[t, i] = (theta_unwrap[1] - theta_unwrap[0])/h
+    #         dtheta[t, i] = (theta_unwrap[1] - theta_unwrap[0])/h
             
     ############# save_data
     param_dict                   = {} 
@@ -134,9 +134,9 @@ if  (len(name) == 0) & (len(ext) == 0): #
     param_dict['K_tr']           = K_tr
     
     param_dict['theta_init']     = theta_init     # initial value of phase
-    param_dict['theta']          = theta          # phase (numerical solution of the model)
-    param_dict['dtheta']         = dtheta         # time deriviation of phase (numerical differentiation)
-    param_dict['phase_dynamics'] = phase_dynamics # time deriviation of phase (model output)
+    # param_dict['theta']          = theta          # phase (numerical solution of the model)
+    # param_dict['dtheta']         = dtheta         # time deriviation of phase (numerical differentiation)
+    # param_dict['phase_dynamics'] = phase_dynamics # time deriviation of phase (model output)
     
     save_name   = 'Sim_param_' + simName
     fullpath_save   = param_path + save_name 
@@ -156,11 +156,43 @@ else:
     K_tr           = param_dict['K_tr']
     
     theta_init     = param_dict['theta_init']
-    theta          = param_dict['theta']
-    dtheta         = param_dict['dtheta'] # time deriviation of phase (numerical differentiation)
-    phase_dynamics = param_dict['phase_dynamics'] # time deriviation of phase (model)
+    # theta          = param_dict['theta']
+    # dtheta         = param_dict['dtheta'] # time deriviation of phase (numerical differentiation)
+    # phase_dynamics = param_dict['phase_dynamics'] # time deriviation of phase (model)
 
 del param_dict
+#%% solve stochastic differential equation using Eular-Maruyama Method
+dtheta        = np.zeros((Nt, Nosc))
+theta         = np.zeros((Nt, Nosc))
+theta[0, :]   = theta_init
+noise_scale   = 0.01
+
+phase_dynamics       = np.zeros((Nt, Nosc))
+phase_dynamics[0, :] = func_oscillator_approx_fourier_series(theta[0, :], K1_tr[:,:,0], K2_tr[:,:,0], omega, noise_scale)
+for t in range(1, Nt):
+    if t < int(Nt/3):
+        Nst = 0
+        noise_scale = 0.01
+    elif int(Nt/3) <= t < int(Nt*2/3):
+        Nst = 1
+        noise_scale = 0.01
+    else:
+        Nst = 2
+        noise_scale = 0.01
+    
+    K1 = K1_tr[:,:,Nst]
+    K2 = K2_tr[:,:,Nst]
+    
+    theta_now  = theta[t-1, :]
+    theta_next = euler_maruyama_oscillator_approx_fourier_series(h, func_oscillator_approx_fourier_series, theta_now, K1, K2, omega, noise_scale)
+    
+    theta[t, :]          = theta_next.reshape(1, Nosc)
+    phase_dynamics[t, :] = func_oscillator_approx_fourier_series(theta[t, :], K1, K2, omega, noise_scale)
+
+    for i in range(Nosc):
+        theta_unwrap = np.unwrap(deepcopy(theta[t-1:t+1, i]))
+        
+        dtheta[t, i] = (theta_unwrap[1] - theta_unwrap[0])/h
 #%% plot phase
 
 axis=np.arange(theta.shape[0])
@@ -237,8 +269,8 @@ idx_st3 = Time>=int(Nt*2/3)
 # idx_st3 = len(Time)-10
 phi     = theta[0:-1,:]
 dphi    = dtheta[1:,:]
-vmin    = 0
-vmax    = 0.7
+vmin    = -0.7
+vmax    =  0.7
 
 Kest_ave1 = np.median(Kest[idx_st1,:], axis=0).reshape(Nosc, Nosc)
 Kest_ave2 = np.median(Kest[idx_st2,:], axis=0).reshape(Nosc, Nosc)
@@ -343,7 +375,7 @@ gs        = fig.add_gridspec(3, State)
 ratios    = [1,1,0.08]
 gs.set_height_ratios(ratios)
 
-cmaps     = 'Blues'
+cmaps     = 'bwr'
 ax_cb     = fig.add_subplot(gs[2, 0:State+1])
 cbar_info = [False, {"orientation":"horizontal"}, ax_cb]
 

@@ -30,6 +30,7 @@ from my_modules.my_dynamical_bayes_mod import my_Bayesian_CP
 
 from my_modules.my_graph_visualization import *
 from scipy.stats import zscore
+from scipy.io import savemat
 from numpy.random import *
 import numpy as np
 import glob
@@ -86,37 +87,37 @@ if (len(name) == 0) & (len(ext) == 0):
     
     ############# Generate synthetic data
     theta_init    = np.random.uniform(low = 0, high = 2 * np.pi, size = Nosc)#np.array([np.pi, 0, np.pi/2])
-    dtheta        = np.zeros((Nt, Nosc))
-    theta         = np.zeros((Nt, Nosc))
-    theta[0, :]   = theta_init
-    noise_scale   = 0.01
+    # dtheta        = np.zeros((Nt, Nosc))
+    # theta         = np.zeros((Nt, Nosc))
+    # theta[0, :]   = theta_init
+    # noise_scale   = 0.01
     
-    phase_dynamics       = np.zeros((Nt, Nosc))
-    phase_dynamics[0, :] = func_oscillator_approx_fourier_series(theta[0, :], K1_tr[:,:,0], K2_tr[:,:,0], omega, noise_scale)
-    for t in range(1, Nt):
-        if t < int(Nt/3):
-            Nst = 0
-            noise_scale = 0.01
-        elif int(Nt/3) <= t < int(Nt*2/3):
-            Nst = 1
-            noise_scale = 0.01
-        else:
-            Nst = 2
-            noise_scale = 0.5
+    # phase_dynamics       = np.zeros((Nt, Nosc))
+    # phase_dynamics[0, :] = func_oscillator_approx_fourier_series(theta[0, :], K1_tr[:,:,0], K2_tr[:,:,0], omega, noise_scale)
+    # for t in range(1, Nt):
+    #     if t < int(Nt/3):
+    #         Nst = 0
+    #         noise_scale = 0.01
+    #     elif int(Nt/3) <= t < int(Nt*2/3):
+    #         Nst = 1
+    #         noise_scale = 0.01
+    #     else:
+    #         Nst = 2
+    #         noise_scale = 0.5
         
-        K1 = K1_tr[:,:,Nst]
-        K2 = K2_tr[:,:,Nst]
+    #     K1 = K1_tr[:,:,Nst]
+    #     K2 = K2_tr[:,:,Nst]
         
-        theta_now  = theta[t-1, :]
-        theta_next = runge_kutta_oscillator_approx_fourier_series(h, func_oscillator_approx_fourier_series, theta_now, K1, K2, omega, noise_scale)
+    #     theta_now  = theta[t-1, :]
+    #     theta_next = runge_kutta_oscillator_approx_fourier_series(h, func_oscillator_approx_fourier_series, theta_now, K1, K2, omega, noise_scale)
         
-        theta[t, :]          = theta_next.reshape(1, Nosc)
-        phase_dynamics[t, :] = func_oscillator_approx_fourier_series(theta[t, :], K1, K2, omega, noise_scale)
+    #     theta[t, :]          = theta_next.reshape(1, Nosc)
+    #     phase_dynamics[t, :] = func_oscillator_approx_fourier_series(theta[t, :], K1, K2, omega, noise_scale)
     
-        for i in range(Nosc):
-            theta_unwrap = np.unwrap(deepcopy(theta[t-1:t+1, i]))
+    #     for i in range(Nosc):
+    #         theta_unwrap = np.unwrap(deepcopy(theta[t-1:t+1, i]))
             
-            dtheta[t, i] = (theta_unwrap[1] - theta_unwrap[0])/h
+    #         dtheta[t, i] = (theta_unwrap[1] - theta_unwrap[0])/h
     ############# save_data
     param_dict                   = {} 
     param_dict['Nosc']           = Nosc
@@ -129,9 +130,9 @@ if (len(name) == 0) & (len(ext) == 0):
     param_dict['K_tr']           = K_tr
     
     param_dict['theta_init']     = theta_init     # initial value of phase
-    param_dict['theta']          = theta          # phase (numerical solution of the model)
-    param_dict['dtheta']         = dtheta         # time deriviation of phase (numerical differentiation)
-    param_dict['phase_dynamics'] = phase_dynamics # time deriviation of phase (model output)
+    # param_dict['theta']          = theta          # phase (numerical solution of the model)
+    # param_dict['dtheta']         = dtheta         # time deriviation of phase (numerical differentiation)
+    # param_dict['phase_dynamics'] = phase_dynamics # time deriviation of phase (model output)
     
     save_name   = 'Sim_param_' + simName
     fullpath_save   = param_path + save_name 
@@ -151,11 +152,48 @@ else:
     K_tr           = param_dict['K_tr']
     
     theta_init     = param_dict['theta_init']
-    theta          = param_dict['theta']
-    dtheta         = param_dict['dtheta'] # time deriviation of phase (numerical differentiation)
-    phase_dynamics = param_dict['phase_dynamics'] # time deriviation of phase (model)
+    # theta          = param_dict['theta']
+    # dtheta         = param_dict['dtheta'] # time deriviation of phase (numerical differentiation)
+    # phase_dynamics = param_dict['phase_dynamics'] # time deriviation of phase (model)
     
 del param_dict
+#%% solve stochastic differential equation using Eular-Maruyama Method
+dtheta        = np.zeros((Nt, Nosc))
+theta         = np.zeros((Nt, Nosc))
+theta[0, :]   = theta_init
+noise_scale   = 0.01
+
+phase_dynamics       = np.zeros((Nt, Nosc))
+phase_dynamics[0, :] = func_oscillator_approx_fourier_series(theta[0, :], K1_tr[:,:,0], K2_tr[:,:,0], omega, noise_scale)
+for t in range(1, Nt):
+    if t < int(Nt/3):
+        Nst = 0
+        noise_scale = 0.01
+    elif int(Nt/3) <= t < int(Nt*2/3):
+        Nst = 1
+        noise_scale = 0.01
+    else:
+        Nst = 2
+        noise_scale = 0.1
+    
+    K1 = K1_tr[:,:,Nst]
+    K2 = K2_tr[:,:,Nst]
+    
+    theta_now  = theta[t-1, :]
+    theta_next = euler_maruyama_oscillator_approx_fourier_series(h, func_oscillator_approx_fourier_series, theta_now, K1, K2, omega, noise_scale)
+    
+    theta[t, :]          = theta_next.reshape(1, Nosc)
+    phase_dynamics[t, :] = func_oscillator_approx_fourier_series(theta[t, :], K1, K2, omega, noise_scale)
+
+    for i in range(Nosc):
+        theta_unwrap = np.unwrap(deepcopy(theta[t-1:t+1, i]))
+        
+        dtheta[t, i] = (theta_unwrap[1] - theta_unwrap[0])/h
+
+matpath = current_path + '\\LEiDA\\mat\\'
+if os.path.exists(matpath )==False:  # Make the directory for figures
+    os.makedirs(matpath)
+savemat(matpath+"phase_data_sim2.mat", {'theta':theta, 'h':h, 'fs':1/h})
 #%% plot phase
 
 axis=np.arange(theta.shape[0])
@@ -324,8 +362,6 @@ idx_st2 = (Time>=int(Nt/3)) & (Time<int(Nt*2/3))
 idx_st3 = (Time>=int(Nt*2/3))
 phi     = theta[0:-1,:]
 dphi    = dtheta[1:,:]
-vmin    = 0
-vmax    = 1.0#Kest.mean() + Kest.std()
 
 Kest_ave1 = np.median(Kest[idx_st1,:], axis=0).reshape(Nosc, Nosc)
 Kest_ave2 = np.median(Kest[idx_st2,:], axis=0).reshape(Nosc, Nosc)
@@ -335,17 +371,20 @@ Kest_ave  = np.concatenate((Kest_ave1[:,:,np.newaxis],
                             Kest_ave2[:,:,np.newaxis],
                             Kest_ave3[:,:,np.newaxis]), axis=2)
 #%%
-plot_PRC(phi[idx_st1,:], dphi[idx_st1,:], phi_dlt_plt, PRC[idx_st1,:,:], Kest_ave1, vmin, vmax, Nosc)
+vmin    = 0
+vmax    = 0.7#Kest.mean() + Kest.std()
+
+plot_PRC(phi[idx_st1,:], dphi[idx_st1,:], phi_dlt_plt, PRC[idx_st1,:,:], Kest_ave1, 0, vmax, Nosc, ylims=[18, 32])
 plt.savefig(fig_save_dir + 'PRC_state1.png')
 plt.savefig(fig_save_dir + 'PRC_state1.svg')
 plt.show()
 
-plot_PRC(phi[idx_st2,:], dphi[idx_st2,:], phi_dlt_plt, PRC[idx_st2,:,:], Kest_ave2, vmin, vmax, Nosc)
+plot_PRC(phi[idx_st2,:], dphi[idx_st2,:], phi_dlt_plt, PRC[idx_st2,:,:], Kest_ave2, 0, vmax, Nosc, ylims=[18, 32])
 plt.savefig(fig_save_dir + 'PRC_state2.png')
 plt.savefig(fig_save_dir + 'PRC_state2.svg')
 plt.show()
 
-plot_PRC(phi[idx_st3,:], dphi[idx_st3,:], phi_dlt_plt, PRC[idx_st3,:,:], Kest_ave3, vmin, vmax, Nosc)
+plot_PRC(phi[idx_st3,:], dphi[idx_st3,:], phi_dlt_plt, PRC[idx_st3,:,:], Kest_ave3, 0, vmax, Nosc, ylims=[18, 32])
 plt.savefig(fig_save_dir + 'PRC_state3.png')
 plt.savefig(fig_save_dir + 'PRC_state3.svg')
 plt.show()
@@ -354,3 +393,31 @@ plot_graph(K_tr, Kest_ave, vmin, vmax)
 plt.savefig(fig_save_dir + 'estimated_graph.png')
 plt.savefig(fig_save_dir + 'estimated_graph.svg')
 plt.show()
+
+#%%
+# vmin    = -0.6
+# vmax    =  0.6#Kest.mean() + Kest.std()
+
+# fig       = plt.figure(constrained_layout = False, figsize=(10, 8));
+# plt.subplots_adjust(wspace=0.8, hspace=0.8);
+# gs        = fig.add_gridspec(3, State)
+# ratios    = [1,1,0.08]
+# gs.set_height_ratios(ratios)
+
+# cmaps     = 'bwr'
+# ax_cb     = fig.add_subplot(gs[2, 0:State+1])
+# cbar_info = [False, {"orientation":"horizontal"}, ax_cb]
+
+# for state in range(State):
+#     ### coeff. a_ij
+    
+#     ax = fig.add_subplot(gs[0, state])
+#     vis_heatmap(K_tr[:,:,state], vmin, vmax, cmaps, ax, np.array(['Segment %d\n'%(state+1), 'osci. $j$', 'osci. $i$']), cbar_info)
+    
+#     ax = fig.add_subplot(gs[1, state])
+#     if state == State-1:
+#         cbar_info = [True, {"orientation":"horizontal"}, ax_cb]
+#     vis_heatmap(Kest_ave[:,:,state], vmin, vmax, cmaps, ax, np.array(['', 'osci. $j$', 'osci. $i$']), cbar_info)
+# plt.savefig(fig_save_dir + 'estimated_graph.png')
+# plt.savefig(fig_save_dir + 'estimated_graph.svg')
+# plt.show()

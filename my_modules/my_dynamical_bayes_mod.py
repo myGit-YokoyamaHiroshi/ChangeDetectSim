@@ -104,16 +104,16 @@ class my_Bayesian_CP:
         i    = idx
         
         if T ==1:
-            tmp_sin = np.sin(x[i-1, :].reshape(1, Nosc) - x[i-1, :].reshape(Nosc, 1))
-            tmp_cos = np.cos(x[i-1, :].reshape(1, Nosc) - x[i-1, :].reshape(Nosc, 1))
+            tmp_sin = np.sin(x[i-1, :].reshape(Nosc, 1) - x[i-1, :].reshape(1, Nosc))
+            tmp_cos = np.cos(x[i-1, :].reshape(Nosc, 1) - x[i-1, :].reshape(1, Nosc))
             tmp_cos = tmp_cos - np.eye(Nosc)
             
             x_train = np.concatenate((tmp_cos, tmp_sin), axis=1)
             x_train = np.concatenate((x_train, np.ones((Nosc, 1))), axis=1)
         else:
             for t in range(0, T):
-                tmp_cos = np.cos(x[(i-T)+t, :].reshape(1, Nosc) - x[(i-T)+t, :].reshape(Nosc, 1))
-                tmp_sin = np.sin(x[(i-T)+t, :].reshape(1, Nosc) - x[(i-T)+t, :].reshape(Nosc, 1))
+                tmp_cos = np.cos(x[(i-T)+t, :].reshape(Nosc, 1) - x[(i-T)+t, :].reshape(1, Nosc))
+                tmp_sin = np.sin(x[(i-T)+t, :].reshape(Nosc, 1) - x[(i-T)+t, :].reshape(1, Nosc))
                 
                 tmp_cos = tmp_cos - np.eye(Nosc)
                 

@@ -13,49 +13,27 @@ import numpy as np
 #%%
 ##############################################################################
 
-def func_kuramoto(theta, K, omega):
-    Nosc = theta.shape[0]
-    phase_diff = theta.reshape(1, Nosc) - theta.reshape(Nosc, 1)
-    phase_dynamics = omega + np.sum(K * np.sin(phase_diff.T), axis=0) + randn(Nosc)
-    return phase_dynamics
 
 def func_oscillator_approx_fourier_series(theta, K1, K2, omega, noise_scale):
     Nosc = theta.shape[0]
-    phase_diff = theta.reshape(1, Nosc) - theta.reshape(Nosc, 1)
+    phase_diff = theta.reshape(Nosc, 1) - theta.reshape(1, Nosc) 
     
     if len(K1.shape)==2:
-        phase_dynamics = omega + np.sum(K1.T * np.cos(phase_diff.T), axis=0) + np.sum(K2.T * np.sin(phase_diff.T), axis=0) + noise_scale * randn(Nosc)
+        phase_dynamics = omega + np.sum(K1 * np.cos(phase_diff), axis=1) + np.sum(K2 * np.sin(phase_diff), axis=1) + noise_scale * randn(Nosc)
     elif len(K1.shape)==3:
         _,_,Norder = K1.shape
         
         for n in range(Norder):
             if n == 0:
-                Cos = np.sum(K1[:,:,n].T * np.cos(phase_diff.T), axis=0)
-                Sin = np.sum(K2[:,:,n].T * np.sin(phase_diff.T), axis=0)
+                Cos = np.sum(K1[:,:,n] * np.cos(phase_diff), axis=1)
+                Sin = np.sum(K2[:,:,n] * np.sin(phase_diff), axis=1)
             else:
-                Cos += np.sum(K1[:,:,n].T * np.cos(n * phase_diff.T), axis=0)
-                Sin += np.sum(K2[:,:,n] .T* np.sin(n * phase_diff.T), axis=0)
+                Cos += np.sum(K1[:,:,n] * np.cos(n * phase_diff), axis=1)
+                Sin += np.sum(K2[:,:,n] * np.sin(n * phase_diff), axis=1)
         
         phase_dynamics = omega + Cos + Sin + noise_scale * randn(Nosc)
         
     return phase_dynamics
-
-def runge_kutta_kuramoto(h, func, theta_now, K, omega):
-    k1=func(theta_now, K, omega)#omega+K*np.sin(theta_now[::-1]-theta_now)
-    
-    theta4k2=theta_now+(h/2)*k1
-    k2=func(theta4k2, K, omega)#omega+K*np.sin(theta4k2[::-1]-theta4k2)
-    
-    theta4k3=theta_now+(h/2)*k2
-    k3=func(theta4k3, K, omega)#omega+K*np.sin(theta4k3[::-1]-theta4k3)
-    
-    theta4k4=theta_now+h*k3
-    k4=func(theta4k4, K, omega)#omega+K*np.sin(theta4k4[::-1]-theta4k4)
-    
-    theta_next=theta_now+(h/6)*(k1+2*k2+2*k3+k4)
-    theta_next=np.mod(theta_next, 2*np.pi)
-    
-    return theta_next
 
 def runge_kutta_oscillator_approx_fourier_series(h, func, theta_now, K1, K2, omega, noise_scale):
     k1=func(theta_now, K1, K2, omega, noise_scale)#omega+K*np.sin(theta_now[::-1]-theta_now)
@@ -74,7 +52,15 @@ def runge_kutta_oscillator_approx_fourier_series(h, func, theta_now, K1, K2, ome
     
     return theta_next
 
-
+def euler_maruyama_oscillator_approx_fourier_series(h, func, theta_now, K1, K2, omega, noise_scale):
+    dt = h
+    p  = 0.001
+    dw = np.random.randn(theta_now.shape[0])
+    
+    theta      = theta_now + func(theta_now, K1, K2, omega, noise_scale) * dt
+    theta_next = theta + np.sqrt(dt) * p * dw
+    theta_next = np.mod(theta_next, 2*np.pi)
+    return theta_next
 #%%
 def reconstruct_phase_response_curve(beta, omega, Nosc):
     Nt, Npair, Nparam = beta.shape

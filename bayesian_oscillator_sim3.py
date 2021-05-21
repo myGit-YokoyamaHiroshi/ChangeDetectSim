@@ -165,20 +165,20 @@ del param_dict
 dtheta        = np.zeros((Nt, Nosc))
 theta         = np.zeros((Nt, Nosc))
 theta[0, :]   = theta_init
-noise_scale   = 0.01
+noise_scale   = 0.001
 
 phase_dynamics       = np.zeros((Nt, Nosc))
-phase_dynamics[0, :] = func_oscillator_approx_fourier_series(theta[0, :], K1_tr[:,:,0], K2_tr[:,:,0], omega, noise_scale)
+phase_dynamics[0, :] = func_oscillator_approx_fourier_series(theta[0, :], K1_tr[:,:,0], K2_tr[:,:,0], omega)
 for t in range(1, Nt):
     if t < int(Nt/3):
         Nst = 0
-        noise_scale = 0.01
+        noise_scale = 0.001
     elif int(Nt/3) <= t < int(Nt*2/3):
         Nst = 1
-        noise_scale = 0.01
+        noise_scale = 0.001
     else:
         Nst = 2
-        noise_scale = 0.01
+        noise_scale = 0.001
     
     K1 = K1_tr[:,:,Nst]
     K2 = K2_tr[:,:,Nst]
@@ -187,7 +187,7 @@ for t in range(1, Nt):
     theta_next = euler_maruyama_oscillator_approx_fourier_series(h, func_oscillator_approx_fourier_series, theta_now, K1, K2, omega, noise_scale)
     
     theta[t, :]          = theta_next.reshape(1, Nosc)
-    phase_dynamics[t, :] = func_oscillator_approx_fourier_series(theta[t, :], K1, K2, omega, noise_scale)
+    phase_dynamics[t, :] = func_oscillator_approx_fourier_series(theta[t, :], K1, K2, omega)
 
     for i in range(Nosc):
         theta_unwrap = np.unwrap(deepcopy(theta[t-1:t+1, i]))
@@ -216,7 +216,7 @@ plt.xlabel('# sample')
 plt.show()
 #%% plot phase dynamics
 fig = plt.figure(figsize=(20, 4))
-plt.plot(axis, phase_dynamics)
+plt.plot(axis, dtheta)
 plt.title('synthetic data')
 plt.legend(bbox_to_anchor=(1.05, 1), labels = ['oscillator 1', 'oscillator 2', 'oscillator 3'], loc='upper left', borderaxespad=0, fontsize=26)
 plt.xticks(np.arange(0, Nt+1, int(Nt/3)))  # plt.xticks(np.arange(0, Nt+1, int(Nt/2)))  # 
@@ -224,8 +224,8 @@ plt.xlabel('# sample')
 plt.ylabel('phase velocity')
 plt.grid()
 plt.subplots_adjust(right = 0.7)
-plt.savefig(fig_save_dir + 'phase_dynamics.png')
-plt.savefig(fig_save_dir + 'phase_dynamics.svg')
+plt.savefig(fig_save_dir + 'phase_dynamics.png', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'phase_dynamics.svg', bbox_inches="tight")
 plt.show()
 #%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 P = 1 # order of Forier series
@@ -297,8 +297,8 @@ plt.xticks(np.arange(0, Nt+1, int(Nt/3)))  # plt.xticks(np.arange(0, Nt+1, int(N
 # plt.ylim(0.0, 4.0)
 plt.grid()
 plt.subplots_adjust(right = 0.7)
-plt.savefig(fig_save_dir + 'natural_freqs.png')
-plt.savefig(fig_save_dir + 'natural_freqs.svg')
+plt.savefig(fig_save_dir + 'natural_freqs.png', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'natural_freqs.svg', bbox_inches="tight")
 plt.show()
 #%%
 idx = np.where(Changes > Cth)[0]
@@ -314,8 +314,8 @@ plt.xticks(np.arange(0, Nt+1, int(Nt/3)))  # plt.xticks(np.arange(0, Nt+1, int(N
 plt.subplots_adjust(right = 0.7)
 plt.grid()
 # plt.ylim(-5000.0, 60000.0)
-plt.savefig(fig_save_dir + 'changing_point.png')
-plt.savefig(fig_save_dir + 'changing_point.svg')
+plt.savefig(fig_save_dir + 'changing_point.png', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'changing_point.svg', bbox_inches="tight")
 plt.show()
 #%%
 fig = plt.figure(figsize=(20, 4))
@@ -327,15 +327,15 @@ plt.xticks(np.arange(0, Nt+1, int(Nt/3)))  # plt.xticks(np.arange(0, Nt+1, int(N
 
 plt.subplots_adjust(right = 0.7)
 plt.grid()
-plt.savefig(fig_save_dir + 'loglikelihood.png')
-plt.savefig(fig_save_dir + 'loglikelihood.svg')
+plt.savefig(fig_save_dir + 'loglikelihood.png', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'loglikelihood.svg', bbox_inches="tight")
 plt.show()
 
 #%% plot phase dynamics
 fig = plt.figure(figsize=(20, 4))
 
 line1 = plt.plot(Time, y_hat, c = 'k', linestyle = '-', zorder = 1, label = 'pred')
-line2 = plt.plot(axis, phase_dynamics, c = np.array([0.5, 0.5, 0.5]), linewidth = 4,zorder = 0, label = 'true')
+line2 = plt.plot(axis, dtheta, c = np.array([0.5, 0.5, 0.5]), linewidth = 4,zorder = 0, label = 'true')
 plt.xticks(np.arange(0, Nt+1, int(Nt/3)))  # plt.xticks(np.arange(0, Nt+1, int(Nt/2)))  # 
 plt.xlabel('# sample')
 plt.ylabel('phase velocity')
@@ -345,8 +345,8 @@ handle = [line1[-1], line2[-1]]
 labels = ['pred.', 'true']
 plt.legend(handle, labels, bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0, fontsize=26)
 plt.subplots_adjust(right = 0.7)
-plt.savefig(fig_save_dir + 'phase_dynamics_est.png')
-plt.savefig(fig_save_dir + 'phase_dynamics_est.svg')
+plt.savefig(fig_save_dir + 'phase_dynamics_est.png', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'phase_dynamics_est.svg', bbox_inches="tight")
 plt.show()
 #%%
 fig = plt.figure(figsize=(4, 4))
@@ -365,8 +365,8 @@ handle = [line1[-1], line2[-1]]
 labels = ['pred.', 'true']
 # plt.legend(handle, labels, bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0, fontsize=26)
 plt.subplots_adjust(right = 0.7)
-# plt.savefig(fig_save_dir + 'phase_dynamics_est.png')
-# plt.savefig(fig_save_dir + 'phase_dynamics_est.svg')
+# plt.savefig(fig_save_dir + 'phase_dynamics_est.png', bbox_inches="tight")
+# plt.savefig(fig_save_dir + 'phase_dynamics_est.svg', bbox_inches="tight")
 plt.show()
 #%%
 fig       = plt.figure(constrained_layout = False, figsize=(10, 8));
@@ -389,6 +389,6 @@ for state in range(State):
     if state == State-1:
         cbar_info = [True, {"orientation":"horizontal"}, ax_cb]
     vis_heatmap(Kest_ave[:,:,state], vmin, vmax, cmaps, ax, np.array(['', 'osci. $j$', 'osci. $i$']), cbar_info)
-plt.savefig(fig_save_dir + 'estimated_graph.png')
-plt.savefig(fig_save_dir + 'estimated_graph.svg')
+plt.savefig(fig_save_dir + 'estimated_graph.png', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'estimated_graph.svg', bbox_inches="tight")
 plt.show()

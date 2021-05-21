@@ -227,7 +227,7 @@ class my_Bayesian_CP:
         
         ############# changing ratio ##############################################
         ########## KL divergence
-        change_ratio = KL_div(mu_beta0, mu_beta, Kb0, Kb) 
+        change_ratio = KL_div(mu_beta0, mu_beta, Kb0, Kb) #+ KL_div(mu_beta, mu_beta0, Kb, Kb0) 
         ###########################################################################
         return mu_beta, Kb, loglike, change_ratio
 

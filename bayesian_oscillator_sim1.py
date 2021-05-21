@@ -110,7 +110,7 @@ if  (len(name) != 2) & (len(ext) != 2): #
     # param_dict['dtheta']         = dtheta         # time deriviation of phase (numerical differentiation)
     # param_dict['phase_dynamics'] = phase_dynamics # time deriviation of phase (model output)
     
-    save_name                    = 'Sim_param_' + simName#  'sim6' 
+    save_name                    = 'Sim_param_' + simName
     fullpath_save                = param_path
     
     if os.path.exists(fullpath_save)==False:  # Make the directory for figures
@@ -141,10 +141,10 @@ del param_dict
 dtheta      = np.zeros((Nt, Nosc))
 theta       = np.zeros((Nt, Nosc))
 theta[0, :] = theta_init
-noise_scale = 0.01
+noise_scale = 0.001
 
 phase_dynamics       = np.zeros((Nt, Nosc))
-phase_dynamics[0, :] = func_oscillator_approx_fourier_series(theta[0, :], K1_tr, K2_tr, omega, noise_scale)
+phase_dynamics[0, :] = func_oscillator_approx_fourier_series(theta[0, :], K1_tr, K2_tr, omega)
 for t in range(1, Nt):
     
     K1 = K1_tr
@@ -154,7 +154,7 @@ for t in range(1, Nt):
     theta_next = euler_maruyama_oscillator_approx_fourier_series(h, func_oscillator_approx_fourier_series, theta_now, K1, K2, omega, noise_scale)
     
     theta[t, :]          = theta_next.reshape(1, Nosc)
-    phase_dynamics[t, :] = func_oscillator_approx_fourier_series(theta[t, :], K1, K2, omega, noise_scale)
+    phase_dynamics[t, :] = func_oscillator_approx_fourier_series(theta[t, :], K1, K2, omega)
 
     for i in range(Nosc):
         theta_unwrap = np.unwrap(deepcopy(theta[t-1:t+1, i]))

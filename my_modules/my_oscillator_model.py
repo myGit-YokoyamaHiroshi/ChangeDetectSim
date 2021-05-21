@@ -14,12 +14,12 @@ import numpy as np
 ##############################################################################
 
 
-def func_oscillator_approx_fourier_series(theta, K1, K2, omega, noise_scale):
+def func_oscillator_approx_fourier_series(theta, K1, K2, omega):
     Nosc = theta.shape[0]
     phase_diff = theta.reshape(Nosc, 1) - theta.reshape(1, Nosc) 
     
     if len(K1.shape)==2:
-        phase_dynamics = omega + np.sum(K1 * np.cos(phase_diff), axis=1) + np.sum(K2 * np.sin(phase_diff), axis=1) + noise_scale * randn(Nosc)
+        phase_dynamics = omega + np.sum(K1 * np.cos(phase_diff), axis=1) + np.sum(K2 * np.sin(phase_diff), axis=1) 
     elif len(K1.shape)==3:
         _,_,Norder = K1.shape
         
@@ -31,34 +31,18 @@ def func_oscillator_approx_fourier_series(theta, K1, K2, omega, noise_scale):
                 Cos += np.sum(K1[:,:,n] * np.cos(n * phase_diff), axis=1)
                 Sin += np.sum(K2[:,:,n] * np.sin(n * phase_diff), axis=1)
         
-        phase_dynamics = omega + Cos + Sin + noise_scale * randn(Nosc)
+        phase_dynamics = omega + Cos + Sin 
         
     return phase_dynamics
 
-def runge_kutta_oscillator_approx_fourier_series(h, func, theta_now, K1, K2, omega, noise_scale):
-    k1=func(theta_now, K1, K2, omega, noise_scale)#omega+K*np.sin(theta_now[::-1]-theta_now)
-    
-    theta4k2=theta_now+(h/2)*k1
-    k2=func(theta4k2, K1, K2, omega, noise_scale)#omega+K*np.sin(theta4k2[::-1]-theta4k2)
-    
-    theta4k3=theta_now+(h/2)*k2
-    k3=func(theta4k3, K1, K2, omega, noise_scale)#omega+K*np.sin(theta4k3[::-1]-theta4k3)
-    
-    theta4k4=theta_now+h*k3
-    k4=func(theta4k4, K1, K2, omega, noise_scale)#omega+K*np.sin(theta4k4[::-1]-theta4k4)
-    
-    theta_next=theta_now+(h/6)*(k1+2*k2+2*k3+k4)
-    theta_next=np.mod(theta_next, 2*np.pi)
-    
-    return theta_next
 
 def euler_maruyama_oscillator_approx_fourier_series(h, func, theta_now, K1, K2, omega, noise_scale):
     dt = h
-    p  = 0.001
-    dw = np.random.randn(theta_now.shape[0])
+    p  = noise_scale
+    dw = np.sqrt(dt) * np.random.randn(theta_now.shape[0])
     
-    theta      = theta_now + func(theta_now, K1, K2, omega, noise_scale) * dt
-    theta_next = theta + np.sqrt(dt) * p * dw
+    theta      = theta_now + func(theta_now, K1, K2, omega) * dt
+    theta_next = theta +  p * dw
     theta_next = np.mod(theta_next, 2*np.pi)
     return theta_next
 #%%

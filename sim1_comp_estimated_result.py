@@ -76,7 +76,7 @@ def get_rand_error_dist(K_tr, K, Nprm):
 #%%
 ###### Load the estimation result of each window size
 Nprm  = 1000
-Ncond = np.array([3, 10, 15, 20])
+Ncond = np.array([3, 10, 15, 20, 30])
 lgnd  = ['$N_{osc}$ = %2d'%(n) for n in Ncond]
 fname = 'estimation_result_Twin_'
 
@@ -145,7 +145,7 @@ for i in range(len(Ncond)):
     
     for j in range(len(epoch_idx)):
         idx       = epoch_idx[j]
-        title_str = 'Epoch\n%d'%(idx)
+        title_str = 'Iteration \n%d'%(idx)
         K         = deepcopy(Kest[idx-2,:]).reshape(Nosc, Nosc)
         
         if (i==len(Ncond)-1) & (j==len(epoch_idx)-1):
@@ -170,7 +170,7 @@ plt.rcParams['font.family']      = 'Arial'#
 plt.rcParams['mathtext.fontset'] = 'stix' # math font setting
 plt.rcParams["font.size"]        = 15 # Font size
 
-fig       = plt.figure(constrained_layout = False, figsize=(10, 7));
+fig       = plt.figure(constrained_layout = False, figsize=(12, 7));
 gs        = fig.add_gridspec(3, len(Ncond))
 gs.set_height_ratios([1,1,1.2])
 
@@ -185,10 +185,10 @@ for i in range(len(Ncond)):
     ax = fig.add_subplot(gs[2, i])
     ax.plot(Time, error[:,i], label = lgnd[i], color=color_index[i])
     ax.plot(np.array([Time[0]-50,Time[-1]+50]), err_confCI[i] * np.ones(2), label = '$95 \%$ CI', color='k', linestyle='--')
-    ax.set_xlim([Time[0]-50, 1100 + 50])
+    ax.set_xlim([Time[0]-50, 1200 + 50])
     ax.set_ylim([0, 2.5])
     ax.set_xticks([0.0, 500, 1000])
-    ax.set_xlabel('# sample')
+    ax.set_xlabel('# sample \n(# iteration)')
     ax.set_ylabel('MAE (a.u.)')
     ax.set_title(lgnd[i])
     ax.text(  # position text relative to data
@@ -197,7 +197,7 @@ for i in range(len(Ncond)):
         transform=ax.transData      # coordinate system transformation
     )
     
-ax_all.set_xlabel('# sample')
+ax_all.set_xlabel('# sample (# iteration)')
 ax_all.set_ylabel('mean absolute error (a.u.)')
 ax_all.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
 
@@ -208,14 +208,14 @@ plt.show()
 #%%
 cbar_info = [False, {"orientation":"horizontal"},  ax_cb]
 
-fig = plt.figure(figsize=(12, 6))
-outer = gridspec.GridSpec(3, 2, wspace=0.3, hspace=0.2, height_ratios=[1,1,0.08])
+fig = plt.figure(figsize=(12, 8))
+outer = gridspec.GridSpec(4, 2, wspace=0.3, hspace=0.2, height_ratios=[1,1,1,0.08])
 
-tmp   = plt.Subplot(fig, outer[4:])
+tmp   = plt.Subplot(fig, outer[6:])
 ax_cb = fig.add_subplot(tmp)
 
-for i in range(4):
-    if i==3:
+for i in range(len(Ncond)):
+    if i==4:
         cbar_info = [True, {"orientation":"horizontal"},  ax_cb]
     else:
         cbar_info = [False, {"orientation":"horizontal"},  ax_cb]

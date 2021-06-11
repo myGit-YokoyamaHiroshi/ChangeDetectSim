@@ -4,7 +4,7 @@ get_ipython().magic('reset -sf')
 #get_ipython().magic('cls')
 
 import os
-os.chdir('D:\\GitHub\\ChangeDetectSim\\')
+os.chdir('D:\\GitHub\\ChangeDetectSim_v2\\')
 
 
 sim_name     = 'sim2'
@@ -19,7 +19,7 @@ param_path = current_path + '\\save_data\\param_' +  sim_name + '\\'# Set path o
 import matplotlib.pylab as plt
 plt.rcParams['font.family']      = 'Arial'#
 plt.rcParams['mathtext.fontset'] = 'stix' # math font setting
-plt.rcParams["font.size"]        = 18 # Font size
+plt.rcParams["font.size"]        = 28 # Font size
 
 #%%
 # from my_modules.my_dynamical_bayes import *
@@ -44,20 +44,10 @@ for file in os.listdir(param_path):
 fullpath       = param_path + name[0] + ext[0]
 param_dict     = np.load(fullpath, encoding='ASCII', allow_pickle='True').item()    
 K_tr           = param_dict['K_tr']
-theta          = param_dict['theta']
 State          = param_dict['State']
-axis           = np.arange(theta.shape[0])
-#%% Estimate state changes using LEiDA algorithm
-fname = 'LEiDA_results.mat'
-if os.path.exists(current_path + '\\LEiDA\\' + fname)==False:
-#%%
-    matpath = current_path + '\\LEiDA\\mat\\'
-    fname   = 'phase_data_sim2.mat'
-    
-    oc.addpath(current_path + '\\LEiDA\\')
-    oc.addpath('C:\Octave\Octave-5.2.0\mingw64\share\octave\packages\statistics-1.4.1')
-    oc.LEiDA(matpath, fname)
+axis           = np.arange(param_dict['Nt'])
 #%% Visualize the result of LEiDA
+fname = 'LEiDA_results.mat'
 matdict = loadmat(current_path + '\\LEiDA\\' + fname)
 Eig          = matdict['Leading_Eig']
 clust_labels = matdict['clust_labels']
@@ -68,7 +58,6 @@ FCpattern    = matdict['FCpattern']
 clust        = np.zeros((NofClust, len(clust_labels)))
 iFC_clust    = np.zeros((iFCall.shape[0], iFCall.shape[0], NofClust))
 
-
 for c in range(NofClust):
     idx_c = np.where(clust_labels==(c+1))[0]
     clust[c,idx_c]   = 1
@@ -76,58 +65,66 @@ for c in range(NofClust):
     iFC_clust[:,:,c] = FCpattern[c,:].reshape(iFCall.shape[0],1) @ FCpattern[c,:].reshape(1,iFCall.shape[0])
     iFC_clust[:,:,c] = iFC_clust[:,:,c] - np.diag(np.diag(iFC_clust[:,:,c]))
     
-fig = plt.figure(constrained_layout = False, figsize=(8, 12));
-plt.subplots_adjust(wspace=0.0, hspace=1);
-gs  = fig.add_gridspec(NofClust, 2)
+# fig = plt.figure(constrained_layout = False, figsize=(8, 12));
+# plt.subplots_adjust(wspace=0.0, hspace=1);
+# gs  = fig.add_gridspec(NofClust, 2)
+
+# for state in range(0,NofClust):
+#     ax1 = fig.add_subplot(gs[state, 0])
+
+#     vis_undirected_graph(np.triu((iFC_clust[:,:,state]).T), -0.7, 0.7)
+    
+#     ax2 = fig.add_subplot(gs[state, 1])
+#     ax2.plot(clust[state,:])
+#     ax2.set_title('State %d'%(state+1))
+#     ax2.set_ylabel('time course')
+#     ax2.set_xlabel('# sample')
+
+# plt.savefig(fig_save_dir + 'estimated_state_changes_LEiDA.png')
+# plt.savefig(fig_save_dir + 'estimated_state_changes_LEiDA.svg')
+
+tmp          = clust_labels[1:] - clust_labels[0:-1]
+cp_idx       = np.where(tmp!=0)[0]+1
+cp_idx       = np.hstack((0, cp_idx, len(clust_labels)))
+segment      = np.array([cp_idx[0:-1],cp_idx[1:]]).T        
+#%%
+color = ['b','c','m'] 
+
+fig = plt.figure(figsize = (20, 10))
+gs = fig.add_gridspec(2, 4, height_ratios=[1, 0.3])
+ax2 = fig.add_subplot(gs[1,:])
+ax2.set_xlim(0, len(clust_labels))
+ax2.set_ylim(0, 1)
 
 for state in range(0,NofClust):
-    ax1 = fig.add_subplot(gs[state, 0])
+    ax1 = fig.add_subplot(gs[0,state])
     
-    # if state==NofClust-1:
-    #     ax_cb = fig.add_subplot(gs[state+1, 0])
-    #     cbar_info = [True, {"orientation":"horizontal"},  ax_cb]
-    # else:
-    #     cbar_info = [False, {"orientation":"horizontal"},  ax1]
-    vis_undirected_graph(np.triu((iFC_clust[:,:,state]).T), -0.7, 0.7)
-    # vis_heatmap(iFC_clust[:,:,state], -.6, .6, 'bwr', ax1, np.array(['\n $V_{c}V_{c}^{T}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.001)
-    # ax1.set_ylim([-.5, 1.5])
+    vis_undirected_graph(np.triu((iFC_clust[:,:,state]).T), -0.6, 0.6)
+    ax1.set_ylim(-0.8, 1.3)
+    ax1.plot([0, 1], [-0.5,-0.5], linewidth = 10, color=color[state])
+    ax1.set_title('State ' + str(state+1), fontsize=28)
+
+
+l1 = l2 = l3 = []    
+
+for sgm in range(0, segment.shape[0]):
+    x    = segment[sgm, :]
+    clst = int(clust_labels[x[0]])
     
-    ax2 = fig.add_subplot(gs[state, 1])
-    ax2.plot(clust[state,:])
-    ax2.set_title('State %d'%(state+1))
-    ax2.set_ylabel('time course')
+    if clst ==1:
+        l1 = ax2.axvspan(x[0], x[1], color = color[clst-1], label='State' + str(clst))
+    elif clst==2:
+        l2 = ax2.axvspan(x[0], x[1], color = color[clst-1], label='State' + str(clst))
+    elif clst==3:
+        l3 = ax2.axvspan(x[0], x[1], color = color[clst-1], label='State' + str(clst))
+    
+    ax2.set_yticks([])
     ax2.set_xlabel('# sample')
 
-plt.savefig(fig_save_dir + 'estimated_state_changes_LEiDA.png')
-plt.savefig(fig_save_dir + 'estimated_state_changes_LEiDA.svg')
-#%% Visualize exact state changes
-exact_clust = np.zeros((State, len(axis)))
 
-exact_clust[0, axis<1000]    = 1
-exact_clust[1, (axis>=1000)] = 1
+ax2.legend(handles=[l1,l2,l3], bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
+plt.savefig(fig_save_dir + 'estimated_state_changes_LEiDA.png', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'estimated_state_changes_LEiDA.svg', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'estimated_state_changes_LEiDA.eps', bbox_inches="tight")
 
-
-fig = plt.figure(constrained_layout = False, figsize=(8, 12));
-plt.subplots_adjust(wspace=0.0, hspace=1);
-gs  = fig.add_gridspec(NofClust, 2)
-
-for state in range(0,State-1):
-    ax1 = fig.add_subplot(gs[state, 0])
-    
-    # if state==NofClust-1:
-    #     ax_cb = fig.add_subplot(gs[state+1, 0])
-    #     cbar_info = [True, {"orientation":"horizontal"},  ax_cb]
-    # else:
-    #     cbar_info = [False, {"orientation":"horizontal"},  ax1]
-    vis_directed_graph((K_tr[:,:,state]).T, 0, 0.7)
-    # vis_heatmap(iFC_clust[:,:,state], -.6, .6, 'bwr', ax1, np.array(['\n $V_{c}V_{c}^{T}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.001)
-    # ax1.set_ylim([-.5, 1.5])
-    
-    ax2 = fig.add_subplot(gs[state, 1])
-    ax2.plot(exact_clust[state,:])
-    ax2.set_title('State %d'%(state+1))
-    ax2.set_ylabel('time course')
-    ax2.set_xlabel('# sample')
-
-plt.savefig(fig_save_dir + 'exact_state_changes.png')
-plt.savefig(fig_save_dir + 'exact_state_changes.svg')
+plt.show()

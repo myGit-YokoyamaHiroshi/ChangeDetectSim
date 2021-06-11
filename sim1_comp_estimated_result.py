@@ -10,7 +10,7 @@ get_ipython().magic('reset -sf')
 #get_ipython().magic('cls')
 
 import os
-os.chdir('D:\\GitHub\\ChangeDetectSim\\')
+os.chdir('D:\\GitHub\\ChangeDetectSim_v2\\')
 # os.chdir('C:\\Users\\H.yokoyama\\Documents\\Python_Scripts\\ChangeDetectSim')
 # os.chdir('D:\\Python_Scripts\\test_myBayesianModel_PRC\\') # Set full path of your corrent derectory
 
@@ -77,12 +77,12 @@ def get_rand_error_dist(K_tr, K, Nprm):
 ###### Load the estimation result of each window size
 Nprm  = 1000
 Ncond = np.array([3, 10, 15, 20, 30])
-lgnd  = ['$N_{osc}$ = %2d'%(n) for n in Ncond]
+lgnd  = ['$N_{osci}$ = %2d'%(n) for n in Ncond]
 fname = 'estimation_result_Twin_'
 
 epoch_idx = np.array([100, 500, 1000, 2000, 3000, 4000]) 
-vmin      = -0.7
-vmax      =  0.7
+vmin      = -0.5
+vmax      =  0.5
 cmaps     = 'bwr'
 
 
@@ -140,25 +140,32 @@ for i in range(len(Ncond)):
     
     ############
     ax_tr = fig.add_subplot(gs[i, 0])
-    vis_heatmap(K_tr, vmin, vmax, cmaps, ax_tr, np.array(['True', 'osci. $j$', 'osci. $i$']), cbar_info)
-    
+    vis_heatmap(K_tr, vmin, vmax, ax_tr, np.array(['True', 'osci. $j$', 'osci. $i$']), cbar_info)
+    ax_pos = ax_tr.get_position()
+    fig.text(ax_pos.x1 - .22, ax_pos.y1-0.04, lgnd[i])
     
     for j in range(len(epoch_idx)):
         idx       = epoch_idx[j]
-        title_str = 'Iteration \n%d'%(idx)
+        if j==0:
+            title_str = 'Iteration \n%d'%(idx)
+        else:
+            title_str = '\n%d'%(idx)
+            
         K         = deepcopy(Kest[idx-2,:]).reshape(Nosc, Nosc)
         
         if (i==len(Ncond)-1) & (j==len(epoch_idx)-1):
-            cbar_info = [True, {"orientation":"horizontal"},  ax_cb]
+            cbar_info = [True, {"orientation":"horizontal", 'label': 'Coupling strength (a.u.)'},  ax_cb]
             
         ax = fig.add_subplot(gs[i, j+1])          
-        vis_heatmap(K, vmin, vmax, cmaps, ax, np.array([title_str, 'osci. $j$', 'osci. $i$']), cbar_info)
-    
+        vis_heatmap(K, vmin, vmax, ax, np.array([title_str, 'osci. $j$', 'osci. $i$']), cbar_info)
+        
+        
     error_rnd[:,i] = get_rand_error_dist(K_tr, Kest, Nprm)
     
     del data_dict
-plt.savefig(fig_save_dir + 'comp_est_network.png')
-plt.savefig(fig_save_dir + 'comp_est_network.svg')
+plt.savefig(fig_save_dir + 'comp_est_network.png', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'comp_est_network.svg', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'comp_est_network.eps', bbox_inches="tight")
 plt.show()
     ######################
 #%%
@@ -202,8 +209,9 @@ ax_all.set_ylabel('mean absolute error (a.u.)')
 ax_all.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0)
 
 
-plt.savefig(fig_save_dir + 'comp_est_error.png')
-plt.savefig(fig_save_dir + 'comp_est_error.svg')
+plt.savefig(fig_save_dir + 'comp_est_error.png', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'comp_est_error.svg', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'comp_est_error.eps', bbox_inches="tight")
 plt.show()
 #%%
 cbar_info = [False, {"orientation":"horizontal"},  ax_cb]
@@ -214,11 +222,14 @@ outer = gridspec.GridSpec(4, 2, wspace=0.3, hspace=0.2, height_ratios=[1,1,1,0.0
 tmp   = plt.Subplot(fig, outer[6:])
 ax_cb = fig.add_subplot(tmp)
 
+vmin  = -0.5
+vmax  =  0.5
+
 for i in range(len(Ncond)):
     if i==4:
-        cbar_info = [True, {"orientation":"horizontal"},  ax_cb]
+        cbar_info = [True, {"orientation":"horizontal", 'label': 'Coupling strength (a.u.)'},  ax_cb]
     else:
-        cbar_info = [False, {"orientation":"horizontal"},  ax_cb]
+        cbar_info = [False, {"orientation":"horizontal", 'label': 'Coupling strength (a.u.)'},  ax_cb]
         
     inner = gridspec.GridSpecFromSubplotSpec(1, 3,
                     subplot_spec=outer[i], wspace=0.8, hspace=0.8)
@@ -228,19 +239,20 @@ for i in range(len(Ncond)):
     K  = K_all[i]
     
     a_ax = plt.Subplot(fig, inner[0])
-    vis_heatmap(a, vmin, vmax, cmaps, a_ax, np.array(['\n $a_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.001)
+    vis_heatmap(a, vmin, vmax, a_ax, np.array(['\n $a_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.0)
     fig.add_subplot(a_ax)
     
     b_ax = plt.Subplot(fig, inner[1])
-    vis_heatmap(b, vmin, vmax, cmaps, b_ax, np.array(['$N_{osc}$ = %2d \n $b_{ij}$'%(Ncond[i]), 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.001)
+    vis_heatmap(b, vmin, vmax, b_ax, np.array(['$N_{osci}$ = %2d \n $b_{ij}$'%(Ncond[i]), 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.0)
     fig.add_subplot(b_ax)
     
     k_ax = plt.Subplot(fig, inner[2])
-    vis_heatmap(K, vmin, vmax, cmaps, k_ax, np.array(['\n $K_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.001)
+    vis_heatmap(K, vmin, vmax, k_ax, np.array(['\n $K_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.0)
     fig.add_subplot(k_ax)
     
     
     
-plt.savefig(fig_save_dir + 'param_setting.png')
-plt.savefig(fig_save_dir + 'param_setting.svg')
+plt.savefig(fig_save_dir + 'param_setting.png', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'param_setting.svg', bbox_inches="tight")
+plt.savefig(fig_save_dir + 'param_setting.eps', bbox_inches="tight")
 plt.show()

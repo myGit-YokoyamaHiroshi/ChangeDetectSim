@@ -40,10 +40,27 @@ def vis_directed_graph(K, vmin, vmax):
     nx.draw_networkx_labels(G, pos, labels, font_size=15, font_color = 'w')
     plt.axis('equal')
     # set alpha value for each edge
-    if vmin < 0:        
-        cm = plt.get_cmap('bwr')
+    if vmin < 0:       
+        from matplotlib.colors import LinearSegmentedColormap
+        
+        cm_b = plt.get_cmap('Blues', 128)
+        cm_r = plt.get_cmap('Reds', 128)
+        
+        color_list_b = []
+        color_list_r = []
+        for i in range(128):
+            color_list_b.append(cm_b(i))
+            color_list_r.append(cm_r(i))
+        
+        color_list_r = np.array(color_list_r)
+        color_list_b = np.flipud(np.array(color_list_b))
+        
+        color_list   = list(np.concatenate((color_list_b, color_list_r), axis=0))
+        
+        cm = LinearSegmentedColormap.from_list('custom_cmap', color_list)
+            
     elif vmin>=0:
-        cm = plt.get_cmap('Reds')
+        cm = plt.get_cmap('Reds', 256)
         
     for i in range(M):
         if vmin < 0:
@@ -55,13 +72,12 @@ def vis_directed_graph(K, vmin, vmax):
         # edges[i].set_alpha(edge_alphas[i])
         edges[i].set_color(rgb)
     
-    pc = mpl.collections.PatchCollection(edges, cmap=plt.cm.Blues)
     
     plt.xlim([-0.24, 1.24])
     plt.ylim([-0.24, 1.24])
-    pc.set_array(edge_colors)
     ax = plt.gca()
     ax.set_axis_off()
+    
     
     return edges
 #%%
@@ -175,8 +191,31 @@ def plot_graph(K_tr, K, vmin, vmax):
         vis_directed_graph(K[:,:,state].T, vmin, vmax)
         ax2.set_title('Segment %d\n (pred.)'%(state+1), fontsize =12)
 #%%
-def vis_heatmap(Mtrx, vmin, vmax, cmaps, ax, strs, cbar_info, linewidths = 0): # cbar_info = [True, {"orientation":"horizontal"}, ax_cb]
+def vis_heatmap(Mtrx, vmin, vmax, ax, strs, cbar_info, linewidths = 0, fontsize=18): # cbar_info = [True, {"orientation":"horizontal"}, ax_cb]
     import seaborn as sns
+    if vmin < 0:       
+        from matplotlib.colors import LinearSegmentedColormap
+        
+        cm_b = plt.get_cmap('Blues', 128)
+        cm_r = plt.get_cmap('Reds', 128)
+        
+        color_list_b = []
+        color_list_r = []
+        for i in range(128):
+            color_list_b.append(cm_b(i))
+            color_list_r.append(cm_r(i))
+        
+        color_list_r = np.array(color_list_r)
+        color_list_b = np.flipud(np.array(color_list_b))
+        
+        color_list   = list(np.concatenate((color_list_b, color_list_r), axis=0))
+        
+        cm = LinearSegmentedColormap.from_list('custom_cmap', color_list)
+            
+    elif vmin>=0:
+        cm = plt.get_cmap('Reds', 256)
+    
+    
     title_str = strs[0]
     xlab      = strs[1]
     ylab      = strs[2]
@@ -184,20 +223,20 @@ def vis_heatmap(Mtrx, vmin, vmax, cmaps, ax, strs, cbar_info, linewidths = 0): #
     if cbar_info[0] == True:
         im = sns.heatmap(Mtrx, 
                          vmin=vmin, vmax=vmax, linewidths=linewidths, linecolor='whitesmoke',
-                         cmap=cmaps, 
+                         cmap=cm, 
                         cbar = True, cbar_kws = cbar_info[1], 
                         ax=ax, cbar_ax = cbar_info[2]) 
     else:
         im = sns.heatmap(Mtrx, 
                          vmin=vmin, vmax=vmax, linewidths=linewidths, linecolor='whitesmoke',
-                         cmap=cmaps, 
+                         cmap=cm, 
                          cbar = False, 
                          ax=ax) 
     for _, spine in im.spines.items():
            spine.set_visible(True)
     ax.set_xticks([])
     ax.set_yticks([])
-    ax.set_title(title_str, fontsize=18)
+    ax.set_title(title_str, fontsize=fontsize)
     ax.set_xlabel(xlab)
     ax.set_ylabel(ylab)
     ax.set_aspect('equal')        

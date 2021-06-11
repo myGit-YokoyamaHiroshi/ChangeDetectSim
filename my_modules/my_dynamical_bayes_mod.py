@@ -32,59 +32,53 @@ class my_Bayesian_CP:
         
         self.Nosc  = Nosc
         
-        Kb0        = np.eye(Nosc*(Nosc*2*P+1)*T)
-
-        
-        mu_beta0 = np.zeros(Nosc*(Nosc*2*P+1)*T)
-        L        = np.nan * np.ones(Nt-T)
-        Changes  = np.nan * np.ones(Nt-T)
+        Total_Epoch = int((Nt-T)/T)
+        # A = np.random.randn(Nosc*(Nosc*2*P+1)*T, Nosc*(Nosc*2*P+1)*T);
+        # B = np.dot(A, A.transpose())
+        Kb0      = np.eye(Nosc*(Nosc*2*P+1)*T)
+        mu_beta0 = np.zeros(Nosc*(Nosc*2*P+1)*T)#np.random.rand(Nosc*(Nosc*2*P+1)*T)#
+        L        = np.nan * np.ones(Total_Epoch)
+        Changes  = np.nan * np.ones(Total_Epoch)
         
         beta     = np.zeros((Nt-T, Nosc*Nosc, 2*P))
-        OMEGA    = np.zeros((Nt-T, Nosc, P))
-            
-        sigma    = 1/prec_param *  abs(np.ones(Nosc*T))
-        
-        theta_hat   = np.nan * np.ones((Nt-T, Nosc))
+        OMEGA    = np.zeros((Nt-T, Nosc))
         #%%
-        cnt = 1
-        
-        Total_Epoch = int((Nt-T)/T)
-        
+        cnt = 0
+
         for i in range(T, Nt, T):#(0, Nt-T-1, T):
             #%%
-            print('Epoch: (%d / %d), index: %d'%(cnt, Total_Epoch, i))
+            print('Epoch: (%d / %d), index: %d'%(cnt+1, Total_Epoch, i))
             #########################################################################
             my_Bayesian_CP.make_fourier_features(self, x, i)            
             Dx      = my_Bayesian_CP.make_Dx(self)#(x_train, T, Nosc, 2*P)
             self.Dx = Dx
+            
             #########################################################################
-            #### Prediction step : Estimate posterior predictive distribution
-            noise   = 1/prec_param
-            sigma   = np.diag(Dx @ Kb0 @ Dx.T) + noise
-            
-            #### Update step : Update prior distribution (update model parameter) 
-            mu_beta, Kb, loglike, change_ratio = my_Bayesian_CP.update_coeff(self, mu_beta0, Kb0, sigma)
-        
-            mu_beta0   = deepcopy(mu_beta)
-            Kb0        = deepcopy(Kb)
-            sigma0     = deepcopy(sigma)
-            L[i-T]       = deepcopy(loglike)
-            Changes[i-T] = deepcopy(change_ratio)
-            
-            # print([i-T])
-            
-            tmp_y = (Dx @ mu_beta).reshape((T, Nosc), order='C')
+            tmp_y = (Dx @ mu_beta0).reshape((T, Nosc), order='C')
             if i == T:
                 y_hat = deepcopy(tmp_y)
             else:
                 y_hat = np.concatenate((y_hat, deepcopy(tmp_y)), axis=0)
+                
+            #### Update step : Update prior distribution (update model parameter) 
+            mu_beta, Kb, loglike, change_ratio, sigma = my_Bayesian_CP.update_coeff(self, mu_beta0, Kb0, prec_param)
+        
+            mu_beta0   = deepcopy(mu_beta)
+            Kb0        = deepcopy(Kb)
+            sigma0     = deepcopy(np.diag(sigma))
+            L[cnt]       = deepcopy(loglike)
+            Changes[cnt] = deepcopy(change_ratio)
+            
+            # print([i-T])
+            
+            
             
             tmp_beta = mu_beta.reshape((T*Nosc, Nosc*2*P+1))#B_hat.reshape((T*Nosc, Nosc*P+1))#
             for p in range(2*P):
                 idx = np.arange(0, Nosc, 1) + p*Nosc
                 beta[i-T:i, :, p]  = tmp_beta[:,idx].reshape((T, Nosc*Nosc))
                 
-            OMEGA[i-T:i, :, 0] = tmp_beta[:,-1].reshape((T, Nosc))
+            OMEGA[i-T:i, :] = tmp_beta[:,-1].reshape((T, Nosc))
             cnt += 1
         
         self.beta    = beta
@@ -172,23 +166,35 @@ class my_Bayesian_CP:
         return Dx
     
 ##############################################################################
-    def update_coeff(self, mu_beta0, Kb0, sigma0):#(X, Y, Dx, mu_beta, Kb, sigma0, T, N):
+    def update_coeff(self, mu_beta0, Kb0, prec_param):#(X, Y, Dx, mu_beta, Kb, sigma0, T, N):
         Y  = self.y_train
         Dx = self.Dx
         T  = self.T
         N  = self.Nosc
         
+        def mylogdet(S):
+            L       = np.linalg.cholesky(S)
+            logdetS = 2*np.sum(np.log(np.diag(L)))
+            
+            return logdetS
         
+        def mydet(S):
+            L       = np.linalg.cholesky(S)
+            detS = np.linalg.det(L)**2
+            
+            return detS
+            
         def KL_div(mu1, mu2, K1, K2):
             D      = K1.shape[0]
             K1_inv = inv_use_cholensky(K1)
             K2_inv = inv_use_cholensky(K2)
             
-            sgn1, logdetK1     = np.linalg.slogdet(K1)
-            sgn1, logdetK2     = np.linalg.slogdet(K2)
+            # sgn1, logdetK1     = np.linalg.slogdet(K1)
+            # sgn1, logdetK2     = np.linalg.slogdet(K2)
             
-            sgn1, logdetK1_inv = np.linalg.slogdet(K1_inv)
-            sgn1, logdetK2_inv = np.linalg.slogdet(K2_inv)
+            logdetK1 = mylogdet(K1)
+            logdetK2 = mylogdet(K2)
+            
             
             term1 = logdetK2 - logdetK1 # = logdetK1_inv - logdetK2_inv # 
             term2 = np.trace(K2_inv @ K1) - D
@@ -196,7 +202,8 @@ class my_Bayesian_CP:
             
             KL    = 0.5 * (term1 + term2 + term3) # KL div ~  cross  -  
             return KL
-    
+        
+            
         def inv_use_cholensky(M):
             L     = np.linalg.cholesky(M)
             L_inv = np.linalg.inv(L)
@@ -205,8 +212,8 @@ class my_Bayesian_CP:
             return M_inv
         
         ############# Estimate posterior distribution #############################
-        tmp     = sigma0 * np.eye(N*T) + Dx @ Kb0 @ Dx.T # (1/sigma0) * np.eye(N*T) + Dx @ Kb0 @ Dx.T # 
-        tmp_inv = inv_use_cholensky(tmp)
+        S       = 1/prec_param * np.eye(N*T) + Dx @ Kb0 @ Dx.T 
+        tmp_inv = inv_use_cholensky(S)
         
         KbDx = Kb0 @ Dx.T
         DxKb = Dx @ Kb0
@@ -224,12 +231,12 @@ class my_Bayesian_CP:
         E_beta  = (mu_beta0 - mu_beta).T @ (mu_beta0 - mu_beta)
         
         loglike = ( - E_err - E_beta )/2
-        
         ############# changing ratio ##############################################
         ########## KL divergence
-        change_ratio = KL_div(mu_beta0, mu_beta, Kb0, Kb) #+ KL_div(mu_beta, mu_beta0, Kb, Kb0) 
+        change_ratio =  KL_div(mu_beta, mu_beta0, Kb, Kb0)  #+ KL_div(mu_beta0, mu_beta, Kb0, Kb) #
+        
         ###########################################################################
-        return mu_beta, Kb, loglike, change_ratio
+        return mu_beta, Kb, loglike, change_ratio, S
 
 
 

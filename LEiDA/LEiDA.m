@@ -37,7 +37,7 @@ function LEiDA(path, file)
     
     %% 1 - Compute the Leading Eigenvectors from the BOLD datasets
     
-    
+    rng(0);
     load([path, file])
     theta = theta.';
     
@@ -124,7 +124,7 @@ function LEiDA(path, file)
     clust_labels = Kmeans_results{ind_max}.IDX;
     Kopt         = rangeK(ind_max);
     FCpattern    = Kmeans_results{ind_max}.C;
-    save LEiDA_results.mat Leading_Eig iFC_all clust_labels Kopt FCpattern
+    save('LEiDA_results.mat', 'Leading_Eig', 'iFC_all clust_labels', 'Kopt', 'FCpattern')
 
 
 %% 4 - Plot FC patterns and stastistics between groups

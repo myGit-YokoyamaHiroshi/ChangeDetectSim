@@ -4,9 +4,7 @@ get_ipython().magic('reset -sf')
 #get_ipython().magic('cls')
 
 import os
-os.chdir('D:\\GitHub\\ChangeDetectSim\\')
-# os.chdir('C:\\Users\\H.yokoyama\\Documents\\Python_Scripts\\ChangeDetectSim')
-# os.chdir('D:\\Python_Scripts\\test_myBayesianModel_PRC\\') # Set full path of your corrent derectory
+os.chdir('D:\\GitHub\\ChangeDetectSim\\')# Set full path of your corrent derectory
 
 simName      = 'sim1'
 Nosc         = 30
@@ -145,6 +143,8 @@ noise_scale = 0.001
 
 phase_dynamics       = np.zeros((Nt, Nosc))
 phase_dynamics[0, :] = func_oscillator_approx_fourier_series(theta[0, :], K1_tr, K2_tr, omega)
+
+np.random.seed(0)
 for t in range(1, Nt):
     
     K1 = K1_tr

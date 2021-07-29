@@ -227,10 +227,11 @@ class my_Bayesian_CP:
         # Computes the log of the marginal likelihood without constant term.
         # Kb_inv  = inv_use_cholensky(deepcopy(Kb))
     
-        E_err   = Yv  @ Yv
-        E_beta  = (mu_beta0 - mu_beta).T @ (mu_beta0 - mu_beta)
         
-        loglike = ( - E_err - E_beta )/2
+        # loglike = ( - E_err - E_beta )/2
+        # 0.5 * (-Ndim * np.log(2*np.pi) - mylogdet(S) - (Y.reshape(-1) - np.dot(H, mu).reshape(-1))  @ inv_use_cholensky(S) @ (Y.reshape(-1) - np.dot(H, mu).reshape(-1)) )
+        Ndim    = S.shape[0]
+        loglike = 0.5 * (-Ndim * np.log(2*np.pi) - mylogdet(S) - Yv @ tmp_inv @ Yv)
         ############# changing ratio ##############################################
         ########## KL divergence
         change_ratio =  KL_div(mu_beta, mu_beta0, Kb, Kb0)  #+ KL_div(mu_beta0, mu_beta, Kb0, Kb) #

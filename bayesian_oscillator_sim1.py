@@ -7,7 +7,7 @@ import os
 os.chdir('D:\\GitHub\\ChangeDetectSim\\')# Set full path of your corrent derectory
 
 simName      = 'sim1'
-Nosc         = 30
+Nosc         = 3
 
 current_path = os.getcwd()
 fig_save_dir = current_path + '\\figures\\' + simName + '\\'  + 'Nosc_' + '%02d'%(Nosc) + '\\'
@@ -274,20 +274,6 @@ plt.grid()
 plt.savefig(fig_save_dir + 'changing_point.png')
 plt.savefig(fig_save_dir + 'changing_point.svg')
 plt.show()
-#%%
-fig = plt.figure(figsize=(20, 4))
-
-plt.plot(Time[np.isnan(L)==False], L[np.isnan(L)==False]);
-plt.xlabel('# sample')
-plt.ylabel('Log-likelihood (a.u.)')
-plt.xticks(np.arange(0, Nt+1, int(Nt/2)))  # plt.xticks(np.arange(0, Nt+1, int(Nt/3))) 
-
-plt.subplots_adjust(right = 0.7)
-plt.grid()
-plt.savefig(fig_save_dir + 'loglikelihood.png')
-plt.savefig(fig_save_dir + 'loglikelihood.svg')
-plt.show()
-
 #%% plot phase dynamics
 fig = plt.figure(figsize=(20, 4))
 

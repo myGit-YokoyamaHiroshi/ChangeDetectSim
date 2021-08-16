@@ -45,4 +45,4 @@ This is sample of python implementation for detecting the changes in the synchro
 &ensp;&ensp;(Division of Neural Dynamics, Department of System Neuroscience, National Institute for Physiological Sciences, Japan)<br>
 
 # References<br>
-Hiroshi Yokoyama, Keiichi Kitajo, “Detection of the changes in dynamical structures in synchronous neural oscillations from a viewpoint of probabilistic inference”, bioRxiv (2020); doi: 10.1101/2020.10.13.335356
+Hiroshi Yokoyama, Keiichi Kitajo, “Detecting changes in dynamical structures in synchronous neural oscillations using probabilistic inference”, bioRxiv (2020); doi: 10.1101/2020.10.13.335356

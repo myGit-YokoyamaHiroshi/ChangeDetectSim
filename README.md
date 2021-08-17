@@ -22,7 +22,7 @@ This is sample of python implementation for detecting the changes in the synchro
 &ensp;&ensp;├─ bayesian_oscillator_sim1.py <br>
 &ensp;&ensp;├─ bayesian_oscillator_sim2.py <br>
 &ensp;&ensp;└─ bayesian_oscillator_sim3.py <br>
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… contains sample examples for how to use of the module “my_dynamical_bayes_mod.py”  <br>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… contains sample scripts for how to use of the module “my_dynamical_bayes_mod.py”  <br>
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… (These scripts reproduce the simulation results performed in the original paper (Yokoyama & Kitajo, bioRxiv, 2020) )<br>
 <br>
 &ensp;*** For the implementation details, refer to paper (preprint), available at: https://doi.org/10.1101/2020.10.13.335356

@@ -421,7 +421,6 @@ for state in range(State):
     fig.add_subplot(ax)
     if state == 0:
         ax_pos = ax.get_position()
-        fig.text(ax_pos.x1 - .22, ax_pos.y1-0.08, 'true')
         fig.text(ax_pos.x1 - .3, ax_pos.y1+0.03, 'A', fontsize=40)
         fig.text(ax_pos.x1 - .3, ax_pos.y1-0.5, 'B', fontsize=40)
     
@@ -435,7 +434,6 @@ for state in range(State):
         cbar_info = [True, {"orientation":"vertical", 'label': 'Coupling strength (a.u.)'}, ax_cb]
     elif state == 0:
         ax_pos = ax.get_position()
-        fig.text(ax_pos.x1 - .28, ax_pos.y1-0.08, 'pred.')
     vis_heatmap(K_tr[:,:,state], vmin, vmax, ax, np.array(['\n $K_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.001, fontsize=28)
     fig.add_subplot(ax)
 

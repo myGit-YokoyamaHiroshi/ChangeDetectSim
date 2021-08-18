@@ -22,7 +22,7 @@ This is sample of python implementation for detecting the changes in the synchro
 &ensp;&ensp;├─ bayesian_oscillator_sim1.py <br>
 &ensp;&ensp;├─ bayesian_oscillator_sim2.py <br>
 &ensp;&ensp;└─ bayesian_oscillator_sim3.py <br>
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… contains sample examples for how to use of the module “my_dynamical_bayes_mod.py”  <br>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… contains sample scripts for how to use of the module “my_dynamical_bayes_mod.py”  <br>
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… (These scripts reproduce the simulation results performed in the original paper (Yokoyama & Kitajo, bioRxiv, 2020) )<br>
 <br>
 &ensp;*** For the implementation details, refer to paper (preprint), available at: https://doi.org/10.1101/2020.10.13.335356
@@ -45,4 +45,4 @@ This is sample of python implementation for detecting the changes in the synchro
 &ensp;&ensp;(Division of Neural Dynamics, Department of System Neuroscience, National Institute for Physiological Sciences, Japan)<br>
 
 # References<br>
-Hiroshi Yokoyama, Keiichi Kitajo, “Detection of the changes in dynamical structures in synchronous neural oscillations from a viewpoint of probabilistic inference”, bioRxiv (2020); doi: 10.1101/2020.10.13.335356
+Hiroshi Yokoyama, Keiichi Kitajo, “Detecting changes in dynamical structures in synchronous neural oscillations using probabilistic inference”, bioRxiv (2020); doi: 10.1101/2020.10.13.335356

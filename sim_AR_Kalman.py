@@ -207,15 +207,15 @@ for i in range(Ncond):
     
     fig = plt.figure()
     ax  = fig.add_subplot(111)
-    plt.plot(ROC[:,0], ROC[:,1], '-o', linewidth=3, label = 'ROC curve (AUC = $%.3f$)'%AUC, zorder=0)
-    plt.scatter(ROC[idx_th,0], ROC[idx_th,1], c='r', s=100, label = str_threshold)
+    plt.plot(ROC[:,0], ROC[:,1], linewidth=3, label = 'ROC curve (AUC = $%.3f$)'%AUC, zorder=0)
+    plt.scatter(ROC[idx_th,0], ROC[idx_th,1], c='k', s=100, label = str_threshold)
     plt.xlabel('FPR')
     plt.ylabel('TPR')
     plt.xticks(np.array([0, 0.5, 1]))
     plt.yticks(np.array([0, 0.5, 1]))
     
     ax.set_aspect('equal')
-    plt.legend(bbox_to_anchor=(-0.15, -.7), loc='lower left',  borderaxespad=0, fontsize=18, frameon=True)
+    plt.legend(bbox_to_anchor=(-0.42, -.7), loc='lower left',  borderaxespad=0, fontsize=22, frameon=True)
     
     plt.savefig(fig_path + 'ROC.png', bbox_inches="tight")
     plt.savefig(fig_path + 'ROC.svg', bbox_inches="tight")

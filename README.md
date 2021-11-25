@@ -15,7 +15,8 @@ This is sample of python implementation for detecting the changes in the synchro
 &ensp;&ensp;│<br>
 &ensp;&ensp;├── \old <br>
 &ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… contains old version of the sample scripts and corresponding data <br>
-&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;   to reproduce the simulation results performed in the old version of preprint paper (Yokoyama & Kitajo, bioRxiv, 2020) <br>
+&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;   to reproduce the simulation results performed in the old version of preprint paper<br>
+&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;    (Yokoyama & Kitajo, bioRxiv, 2020) <br>
 &ensp;&ensp;│<br>
 &ensp;&ensp;├── \save_data <br>
 &ensp;&ensp;│&ensp;&ensp;&ensp;└─ \param_sim\Sim_param.npy <br>

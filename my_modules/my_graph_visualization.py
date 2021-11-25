@@ -201,8 +201,8 @@ def plot_PRC(phi_delta_plot, PRC_est, PRC_true, K, vmin, vmax, Nosc, legend_labe
                 plt.plot(phi_delta_plot, PRC_true[:,cnt], c = 'k', linewidth = 4, label='true', zorder=0)
                 for i in range(len(legend_labels)):
                     plt.plot(phi_delta_plot, PRC_est[:,cnt,i], linewidth = 2, label= 'pred. (' + legend_labels[i] + ')', zorder=i+1)
-                plt.xlabel('$\\theta_{%d} - \\theta_{%d} $'%(osc+1, ref+1))
-                plt.ylabel('$d \\theta_{%d} / dt $'%(ref+1))
+                plt.xlabel('$\\phi_{%d} - \\phi_{%d} $'%(osc+1, ref+1))
+                plt.ylabel('$d \\phi_{%d} / dt $'%(ref+1))
                 plt.xticks([0, np.pi, 2 * np.pi], ['$0$', '$\\pi$', '$2 \\pi$'])
                 
 
@@ -458,7 +458,7 @@ def plot_synthetic_data(t, dtheta, fs, K1_tr, K2_tr, K_tr, vmin, vmax):
             cbar_info = [True, {"orientation":"vertical", 'label': 'Coupling strength (a.u.)'}, ax_cb]
         elif state == 0:
             ax_pos = ax.get_position()
-        vis_heatmap(K_tr[:,:,state], vmin, vmax, ax, np.array(['\n $K_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.001, fontsize=28)
+        vis_heatmap(K_tr[:,:,state], vmin, vmax, ax, np.array(['\n $C_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.001, fontsize=28)
         fig.add_subplot(ax)
     
     ax = plt.Subplot(fig, outer[1])

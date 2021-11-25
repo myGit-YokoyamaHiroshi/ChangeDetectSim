@@ -385,6 +385,61 @@ for i in range(Ncond):
     tmp_prc1, phi_dlt_plt = reconstruct_phase_response_curve(beta[idx_st1,:,:], OMEGA[idx_st1,:], Nosc)
     tmp_prc2, phi_dlt_plt = reconstruct_phase_response_curve(beta[idx_st2,:,:], OMEGA[idx_st2,:], Nosc)
     tmp_prc3, phi_dlt_plt = reconstruct_phase_response_curve(beta[idx_st3,:,:], OMEGA[idx_st3,:], Nosc)
+    #%%
+    
+    t_list = [10, 50, 75, 100, 400]
+
+    fig = plt.figure(constrained_layout = False, figsize=(22, 11));
+    plt.subplots_adjust(wspace=0.0, hspace=0.8);
+    gs  = fig.add_gridspec(2, len(t_list))
+    for t_idx in range(len(t_list)):
+        plt.subplot(gs[0, t_idx])
+        plt.plot(phi_dlt_plt, PRC_true[0,:,1], c='k', linewidth=10, label='true');
+        
+        plt.plot(phi_dlt_plt, tmp_prc1[t_list[t_idx]-1,:, 1], c='b', linewidth=5, label='pred.'); 
+        
+        plt.xticks([0, np.pi, 2 * np.pi], ['$0$', '$\\pi$', '$2 \\pi$'])
+        plt.xlim(-0.8, 2 * np.pi + 0.8)
+        plt.xlabel('$\\phi_2 - \\phi_1 $'%())
+        
+        if t_idx==0:
+            plt.ylabel('$d \\phi_{1} / dt $')
+        elif t_idx==len(t_list)-1:
+            plt.yticks([])
+            plt.legend(bbox_to_anchor=(1.05, 1.0), 
+                       loc='upper left', borderaxespad=0, fontsize=20, frameon=True)
+        else:
+            plt.yticks([])
+        
+        plt.title('$t= %.2f~s$\n(# Iteration:%d)'%(Time[t_list[t_idx]-1], t_list[t_idx]))            
+        plt.ylim(19, 29); 
+        ##############
+        plt.subplot(gs[1, t_idx])
+        plt.plot(phi_dlt_plt, PRC_true[0,:,2], c='k', linewidth=10, label='true');
+        
+        plt.plot(phi_dlt_plt, tmp_prc1[t_list[t_idx]-1,:, 2], c='b', linewidth=5, label='pred.'); 
+        
+        plt.xticks([0, np.pi, 2 * np.pi], ['$0$', '$\\pi$', '$2 \\pi$'])
+        plt.xlim(-0.8, 2 * np.pi + 0.8)
+        plt.xlabel('$\\phi_3 - \\phi_1 $'%())
+        if t_idx==0:
+            plt.ylabel('$d \\phi_{1} / dt $')
+        elif t_idx==len(t_list)-1:
+            plt.yticks([])
+            plt.legend(bbox_to_anchor=(1.05, 1.0), 
+                       loc='upper left', borderaxespad=0, fontsize=20, frameon=True)
+        else:
+            plt.yticks([])
+            
+        plt.title('$t= %.2f~s$\n(# Iteration:%d)'%(Time[t_list[t_idx]-1], t_list[t_idx]))   
+            
+        plt.ylim(19, 29); 
+    
+    plt.savefig(fig_path + 'PRC_est_iter_segment1.png', bbox_inches="tight")
+    plt.savefig(fig_path + 'PRC_est_iter_segment1.svg', bbox_inches="tight")
+    plt.savefig(fig_path + 'PRC_est_iter_segment1.eps', bbox_inches="tight")
+    plt.show()
+    #%%
     
     tmp_prc[0,:,:] = np.median(tmp_prc1, axis=0)
     tmp_prc[1,:,:] = np.median(tmp_prc2, axis=0)

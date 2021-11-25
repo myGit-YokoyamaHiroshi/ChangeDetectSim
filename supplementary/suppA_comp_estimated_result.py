@@ -246,7 +246,7 @@ for i in range(len(Ncond)):
     fig.add_subplot(b_ax)
     
     k_ax = plt.Subplot(fig, inner[2])
-    vis_heatmap(K, vmin, vmax, k_ax, np.array(['\n $K_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.0)
+    vis_heatmap(K, vmin, vmax, k_ax, np.array(['\n $C_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.0)
     fig.add_subplot(k_ax)
     
     

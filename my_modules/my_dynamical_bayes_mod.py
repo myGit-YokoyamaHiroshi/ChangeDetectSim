@@ -42,6 +42,7 @@ class my_Bayesian_CP:
         
         beta     = np.zeros((Nt-T, Nosc*Nosc, 2*P))
         OMEGA    = np.zeros((Nt-T, Nosc))
+        S        = np.zeros((Nt-T, Nosc))
         #%%
         cnt = 0
 
@@ -68,6 +69,7 @@ class my_Bayesian_CP:
             sigma0     = deepcopy(np.diag(sigma))
             L[cnt]       = deepcopy(loglike)
             Changes[cnt] = deepcopy(change_ratio)
+            S[cnt,:]     = deepcopy(np.diag(sigma)) 
             
             # print([i-T])
             
@@ -88,7 +90,7 @@ class my_Bayesian_CP:
         self.y_hat   = y_hat
         self.sigma0  = sigma0
         self.Kb0     = Kb0
-        
+        self.S       = S
         # return beta, OMEGA, Changes, L, y_hat, sigma0, Kb0
 ##############################################################################    
     def make_fourier_features(self, x, idx):

@@ -354,7 +354,7 @@ for i in range(State):
         cbar_info = [False, {"orientation":"vertical", 'label': 'Coupling strength (a.u.)'},  ax_cb]
     
     k_ax = plt.Subplot(fig, inner3[i])
-    vis_heatmap(K_tr[:,:,i], vmin, vmax, k_ax, np.array(['\n $K_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.0, fontsize=28)
+    vis_heatmap(K_tr[:,:,i], vmin, vmax, k_ax, np.array(['\n $C_{ij}$', 'osci. $j$', 'osci. $i$']), cbar_info, linewidths = 0.0, fontsize=28)
     fig.add_subplot(k_ax)
     
     

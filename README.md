@@ -26,7 +26,7 @@ This is sample of python implementation for detecting the changes in the synchro
 &ensp;&ensp;├─ sim_proposed_method.py <br>
 &ensp;&ensp;└─ sim_AR_Kalman.py <br>
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… contains sample scripts to reproduce the simulation results performed in the original paper   <br>
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;     (Yokoyama & Kitajo, bioRxiv, 2020)<br>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;  (Yokoyama & Kitajo, bioRxiv, 2020)<br>
 <br>
 &ensp;*** For the implementation details, refer to paper (preprint), available at: https://doi.org/10.1101/2020.10.13.335356
 

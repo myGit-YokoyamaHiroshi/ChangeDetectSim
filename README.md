@@ -13,11 +13,6 @@ This is sample of python implementation for detecting the changes in the synchro
 &ensp;&ensp;│&ensp;&ensp;&ensp;├─ my_oscillator_model.py    … contains some functions for synthetic data generation <br>
 &ensp;&ensp;│&ensp;&ensp;&ensp;└─ my_graph_visualization.py … contains some functions for the figure visualization results <br>
 &ensp;&ensp;│<br>
-&ensp;&ensp;├── \old <br>
-&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… contains old version of the sample scripts and corresponding data <br>
-&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;   to reproduce the simulation results performed in the old version of preprint paper<br>
-&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;    (Yokoyama & Kitajo, bioRxiv, 2020) <br>
-&ensp;&ensp;│<br>
 &ensp;&ensp;├── \save_data <br>
 &ensp;&ensp;│&ensp;&ensp;&ensp;└─ \param_sim\Sim_param.npy <br>
 &ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… contains the sample parameter settings <br>

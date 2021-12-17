@@ -46,3 +46,28 @@ This is sample of python implementation for detecting the changes in the synchro
 
 # References<br>
 Hiroshi Yokoyama, Keiichi Kitajo, “Detecting changes in dynamical structures in synchronous neural oscillations using probabilistic inference”, bioRxiv (2020); doi: 10.1101/2020.10.13.335356
+
+# Cite<br>
+
+Please cite our paper if you use this code in your own work:
+```
+@article{Yokoyama2020,
+author = {Yokoyama, Hiroshi and Kitajo, Keiichi},
+doi = {https://doi.org/10.1101/2020.10.13.335356},
+journal = {bioRxiv},
+keywords = {AR model,Bayesian linear regression,EEG,bayesian inference,change-point detection,parameter estimation,phase  oscillation model},
+mendeley-tags = {AR model,Bayesian linear regression,EEG,bayesian inference,change-point detection,parameter estimation,phase  oscillation model},
+pages = {1--28},
+title = {{Detecting changes in dynamical structures in synchronous neural oscillations using probabilistic inference}},
+url = {https://doi.org/10.1101/2020.10.13.335356},
+year = {2020}
+}
+```
+```
+@software{ChangeDetectSim,
+  author = {Yokoyana H.},
+  title = {{ChangeDetectSim}},
+  url = {https://github.com/myGit-YokoyamaHiroshi/ChangeDetectSim},
+  year = {2020}
+}
+```

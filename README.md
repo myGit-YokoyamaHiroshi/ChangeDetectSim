@@ -63,7 +63,7 @@ year = {2020}
 ```
 @software{ChangeDetectSim,
   author = {Yokoyana H.},
-  title = {{ChangeDetectSim}},
+  title = {ChangeDetectSim},
   url = {https://github.com/myGit-YokoyamaHiroshi/ChangeDetectSim},
   year = {2020}
 }

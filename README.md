@@ -1,5 +1,6 @@
 # ChangeDetectSim
 This is sample of python implementation for detecting the changes in the synchronous oscillatory networks, based on dynamical Bayesian inference. <br>
+<br>
 <img src="./figures/GraphicalAbstract.png" width=100%>
 
 # Folder structures<br>

@@ -18,14 +18,14 @@ This is sample of python implementation for detecting the changes in the synchro
 &ensp;&ensp;├── \save_data <br>
 &ensp;&ensp;│&ensp;&ensp;&ensp;└─ \param_sim\Sim_param.npy <br>
 &ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… contains the sample parameter settings <br>
-&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; &ensp; &ensp; to reproduce the simulation results performed in the original paper (Yokoyama & Kitajo, bioRxiv, 2020) <br>
+&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; &ensp; &ensp; to reproduce the simulation results performed in the original paper (Yokoyama & Kitajo, NeuroImage, 2022) <br>
 &ensp;&ensp;│<br>
 &ensp;&ensp;├─ sim_proposed_method.py <br>
 &ensp;&ensp;└─ sim_AR_Kalman.py <br>
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… contains sample scripts to reproduce the simulation results performed in the original paper   <br>
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;  (Yokoyama & Kitajo, bioRxiv, 2020)<br>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;  (Yokoyama & Kitajo, NeuroImage, 2022)<br>
 <br>
-&ensp;*** For the implementation details, refer to paper (preprint), available at: https://doi.org/10.1101/2020.10.13.335356
+&ensp;*** For the implementation details, refer to paper, available at: https://doi.org/10.1016/j.neuroimage.2022.119052
 
 # Requirements<br>
 &ensp; Operation has been confirmed only under the following environment. <br>
@@ -47,19 +47,24 @@ This is sample of python implementation for detecting the changes in the synchro
 &ensp;&ensp;(Division of Neural Dynamics, Department of System Neuroscience, National Institute for Physiological Sciences, Japan)<br>
 
 # References<br>
-Hiroshi Yokoyama, Keiichi Kitajo, “Detecting changes in dynamical structures in synchronous neural oscillations using probabilistic inference”, bioRxiv (2020); doi: 10.1101/2020.10.13.335356
+Yokoyama Hiroshi and Kitajo Keiichi. (2022). Detecting changes in dynamical structures in synchronous neural oscillations using probabilistic inference. NeuroImage, 119052. doi: 10.1016/j.neuroimage.2022.119052
 
 # Cite<br>
 
 Please cite our paper if you use this code in your own work:
 ```
-@article{Yokoyama2020,
+@article{Yokoyama2022,
 author = {Yokoyama, Hiroshi and Kitajo, Keiichi},
-doi = {https://doi.org/10.1101/2020.10.13.335356},
-journal = {bioRxiv},
+doi = {10.1016/j.neuroimage.2022.119052},
+issn = {10538119},
+journal = {NeuroImage},
+month = {mar},
+number = {March},
+pages = {119052},
 title = {{Detecting changes in dynamical structures in synchronous neural oscillations using probabilistic inference}},
-url = {https://doi.org/10.1101/2020.10.13.335356},
-year = {2020}
+url = {https://doi.org/10.1016/j.neuroimage.2022.119052},
+volume = {252},
+year = {2022}
 }
 ```
 ```

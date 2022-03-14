@@ -18,7 +18,8 @@ This is sample of python implementation for detecting the changes in the synchro
 &ensp;&ensp;├── \save_data <br>
 &ensp;&ensp;│&ensp;&ensp;&ensp;└─ \param_sim\Sim_param.npy <br>
 &ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;… contains the sample parameter settings <br>
-&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; &ensp; &ensp; to reproduce the simulation results performed in the original paper (Yokoyama & Kitajo, NeuroImage, 2022) <br>
+&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; &ensp; &ensp; to reproduce the simulation results performed in the original paper <br>
+&ensp;&ensp;│&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; &ensp; &ensp;  &ensp; (Yokoyama & Kitajo, NeuroImage, 2022)<br>
 &ensp;&ensp;│<br>
 &ensp;&ensp;├─ sim_proposed_method.py <br>
 &ensp;&ensp;└─ sim_AR_Kalman.py <br>

@@ -1,4 +1,6 @@
 # ChangeDetectSim
+The GitHub repository associated with the peer-reviewed manuscript, entitled "Detecting changes in dynamical structures in synchronous neural oscillations using probabilistic inference" at NeuroImage, https://doi.org/10.1016/j.neuroimage.2022.119052 <br>
+<br>
 This is sample of python implementation for detecting the changes in the synchronous oscillatory networks, based on dynamical Bayesian inference. <br>
 <br>
 <img src="./figures/GraphicalAbstract.png" width=100%>
